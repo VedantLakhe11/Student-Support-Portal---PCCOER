@@ -26,6 +26,7 @@ if (process.env.NODE_ENV !== 'production') {
 const allowedOrigins = [
   'http://localhost:5173', // Vite standard dev server port
   'http://127.0.0.1:5173',
+  'https://student-support-portal-pccoer.vercel.app',
   process.env.FRONTEND_URL,
 ].filter(Boolean);
 
