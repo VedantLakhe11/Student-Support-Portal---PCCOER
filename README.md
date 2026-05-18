@@ -168,3 +168,4 @@ Open **`http://localhost:5173`** in your browser to explore the landing page!
 
 This project has been developed under premium pair-programming engineering standards. All database models, custom components, filters, and animations comply with production-ready guidelines. Enjoy managing your campus resolutions elegantly!
 # Student-Support-Portal---PCCOER
+# Student-Support-Portal---PCCOER
