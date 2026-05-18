@@ -4,7 +4,7 @@ import {
   ShieldAlert, Clock, CheckCircle, FileText, Search, Filter, Trash2, Edit,
   Eye, Calendar, MessageSquare, ChevronLeft, ChevronRight, TrendingUp,
   Sparkles, ShieldX, ToggleLeft, ToggleRight, GraduationCap, Lightbulb,
-  Check, Ban, Users, Layers, ShieldCheck
+  Check, Ban, Users, Layers, ShieldCheck, X
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
@@ -312,7 +312,7 @@ const AdminDashboard = () => {
                       Daily Complaint filing Trends (Last 7 Days)
                     </h3>
                     <div className="h-72 w-full">
-                      <ResponsiveContainer width="100%" height="100%">
+                      <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                         <AreaChart data={timelineData}>
                           <defs>
                             <linearGradient id="adminTrendsGrad" x1="0" y1="0" x2="0" y2="1">
@@ -338,7 +338,7 @@ const AdminDashboard = () => {
                     ) : (
                       <>
                         <div className="h-52 w-full flex items-center justify-center">
-                          <ResponsiveContainer width="100%" height="100%">
+                          <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                             <PieChart>
                               <Pie data={categoryData} cx="50%" cy="50%" innerRadius={55} outerRadius={75} paddingAngle={4} dataKey="value">
                                 {categoryData.map((e, index) => <Cell key={index} fill={COLORS[index % COLORS.length]} />)}
