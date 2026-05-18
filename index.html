@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PCCOER Student Support Portal</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #1a3a5c;
+  --primary-light: #2563a8;
+  --accent: #f97316;
+  --accent-soft: #fff7ed;
+  --sidebar-bg: #0f2540;
+  --sidebar-width: 265px;
+  --topbar-h: 64px;
+  --card-radius: 14px;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #3b82f6;
+  --bg-main: #f0f4f8;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --card-bg: #ffffff;
+  --border: #e2e8f0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-main); color: var(--text-main); }
+
+/* ── AUTH ── */
+#authScreen {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f2540 0%, #1a3a5c 40%, #2563a8 100%);
+  display: flex; align-items: center; justify-content: center;
+}
+.auth-card {
+  background: white; border-radius: 24px; padding: 48px 40px;
+  width: 420px; box-shadow: 0 32px 80px rgba(0,0,0,0.3);
+}
+.auth-logo { width: 60px; height: 60px; background: var(--primary); border-radius: 14px;
+  display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+.auth-logo i { color: white; font-size: 26px; }
+.auth-card h2 { text-align: center; font-weight: 800; color: var(--primary); font-size: 1.6rem; }
+.auth-card p.sub { text-align: center; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 28px; }
+.auth-card .form-control { border-radius: 10px; padding: 12px 16px; border: 1.5px solid #e2e8f0;
+  font-size: 0.9rem; transition: border 0.2s; }
+.auth-card .form-control:focus { border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(37,99,168,0.1); }
+.auth-card label { font-weight: 600; font-size: 0.85rem; color: var(--text-main); margin-bottom: 6px; }
+.btn-login { background: var(--primary); color: white; border: none; border-radius: 10px;
+  padding: 12px; font-weight: 700; font-size: 0.95rem; width: 100%; transition: 0.2s;
+  letter-spacing: 0.3px; }
+.btn-login:hover { background: var(--primary-light); transform: translateY(-1px); }
+.role-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+.role-tab { flex: 1; padding: 8px 4px; border: 1.5px solid #e2e8f0; border-radius: 8px;
+  text-align: center; font-size: 0.72rem; font-weight: 600; cursor: pointer; color: var(--text-muted);
+  transition: 0.2s; }
+.role-tab.active { border-color: var(--primary); background: var(--primary); color: white; }
+.demo-creds { background: #f8fafc; border-radius: 10px; padding: 12px; margin-top: 16px;
+  font-size: 0.78rem; color: var(--text-muted); text-align: center; }
+.demo-creds strong { color: var(--primary); }
+
+/* ── LAYOUT ── */
+#appScreen { display: none; }
+.sidebar {
+  position: fixed; left: 0; top: 0; bottom: 0; width: var(--sidebar-width);
+  background: var(--sidebar-bg); z-index: 100; display: flex; flex-direction: column;
+  transition: transform 0.3s;
+}
+.sidebar-brand { padding: 20px 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.brand-logo { display: flex; align-items: center; gap: 12px; }
+.brand-icon { width: 38px; height: 38px; background: var(--accent); border-radius: 10px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.brand-icon i { color: white; font-size: 16px; }
+.brand-text { color: white; }
+.brand-text .name { font-size: 0.78rem; font-weight: 800; line-height: 1.2; letter-spacing: 0.3px; }
+.brand-text .college { font-size: 0.65rem; color: rgba(255,255,255,0.45); font-weight: 400; }
+.college-logo{
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: white;
+  padding: 2px;
+  border: 2px solid rgba(255,255,255,0.2);
+}
+.sidebar-user { padding: 14px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
+.avatar-sm { width: 34px; height: 34px; border-radius: 50%; background: var(--accent);
+  display: flex; align-items: center; justify-content: center; color: white; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+.user-info .u-name { color: white; font-size: 0.8rem; font-weight: 600; }
+.user-info .u-role { color: rgba(255,255,255,0.45); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.sidebar-nav { flex: 1; overflow-y: auto; padding: 12px 0; }
+.nav-section { padding: 8px 20px 4px; color: rgba(255,255,255,0.3); font-size: 0.63rem;
+  font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+.nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 20px;
+  color: rgba(255,255,255,0.55); font-size: 0.82rem; font-weight: 500; cursor: pointer;
+  transition: 0.15s; border-left: 3px solid transparent; text-decoration: none; }
+.nav-item:hover { color: white; background: rgba(255,255,255,0.06); }
+.nav-item.active { color: white; background: rgba(255,255,255,0.1); border-left-color: var(--accent); }
+.nav-item i { width: 18px; text-align: center; font-size: 0.88rem; }
+.nav-badge { margin-left: auto; background: var(--accent); color: white; border-radius: 12px;
+  font-size: 0.65rem; font-weight: 700; padding: 2px 7px; }
+
+.main-wrap { margin-left: var(--sidebar-width); display: flex; flex-direction: column; min-height: 100vh; }
+.topbar {
+  height: var(--topbar-h); background: white; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 28px; gap: 16px; position: sticky; top: 0; z-index: 50;
+}
+.topbar-title { font-size: 1.05rem; font-weight: 700; color: var(--text-main); flex: 1; }
+.topbar-actions { display: flex; align-items: center; gap: 10px; }
+.icon-btn { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--border);
+  background: white; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--text-muted); font-size: 14px; transition: 0.15s; position: relative; }
+.icon-btn:hover { background: var(--bg-main); color: var(--primary); }
+.notif-dot { position: absolute; top: 6px; right: 6px; width: 7px; height: 7px;
+  background: var(--accent); border-radius: 50%; border: 1.5px solid white; }
+.avatar-top { width: 36px; height: 36px; border-radius: 50%; background: var(--primary);
+  color: white; display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; cursor: pointer; }
+.page-content { flex: 1; padding: 28px; }
+
+/* ── PAGES ── */
+.page { display: none; }
+.page.active { display: block; }
+.page-header { margin-bottom: 24px; }
+.page-header h1 { font-size: 1.5rem; font-weight: 800; }
+.page-header p { color: var(--text-muted); font-size: 0.88rem; margin-top: 4px; }
+
+/* Cards */
+.card { border-radius: var(--card-radius); border: 1px solid var(--border); background: var(--card-bg); }
+.card-header-custom { padding: 18px 20px 0; }
+.card-title { font-size: 0.95rem; font-weight: 700; }
+.card-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+
+.stat-card { border-radius: var(--card-radius); padding: 20px; border: 1px solid var(--border);
+  background: white; }
+.stat-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center;
+  justify-content: center; font-size: 18px; margin-bottom: 14px; }
+.stat-value { font-size: 1.8rem; font-weight: 800; line-height: 1; }
+.stat-label { font-size: 0.78rem; color: var(--text-muted); margin-top: 6px; font-weight: 500; }
+.stat-delta { font-size: 0.73rem; font-weight: 600; margin-top: 8px; }
+.stat-delta.up { color: var(--success); }
+.stat-delta.down { color: var(--danger); }
+.icon-blue { background: #dbeafe; color: #1d4ed8; }
+.icon-green { background: #dcfce7; color: #15803d; }
+.icon-amber { background: #fef3c7; color: #b45309; }
+.icon-red { background: #fee2e2; color: #dc2626; }
+.icon-purple { background: #ede9fe; color: #7c3aed; }
+.icon-orange { background: #ffedd5; color: #c2410c; }
+
+/* Badges */
+.badge-status { padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
+.badge-open { background: #fef3c7; color: #b45309; }
+.badge-progress { background: #dbeafe; color: #1d4ed8; }
+.badge-resolved { background: #dcfce7; color: #15803d; }
+.badge-closed { background: #f1f5f9; color: #64748b; }
+.badge-pending { background: #ede9fe; color: #7c3aed; }
+
+/* Table */
+.table-custom { font-size: 0.82rem; }
+.table-custom th { font-weight: 600; color: var(--text-muted); font-size: 0.73rem; text-transform: uppercase; letter-spacing: 0.5px; background: #f8fafc; }
+.table-custom td { vertical-align: middle; color: var(--text-main); }
+
+/* Forms */
+.form-label-custom { font-size: 0.82rem; font-weight: 600; color: var(--text-main); margin-bottom: 6px; }
+.form-control-custom { border: 1.5px solid var(--border); border-radius: 8px; padding: 10px 14px;
+  font-size: 0.85rem; width: 100%; outline: none; transition: border 0.2s; background: white; color: var(--text-main); }
+.form-control-custom:focus { border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(37,99,168,0.08); }
+.form-select-custom { border: 1.5px solid var(--border); border-radius: 8px; padding: 10px 14px;
+  font-size: 0.85rem; width: 100%; outline: none; transition: border 0.2s; background: white;
+  color: var(--text-main); appearance: none; cursor: pointer; }
+.btn-primary-custom { background: var(--primary); color: white; border: none; border-radius: 8px;
+  padding: 10px 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+.btn-primary-custom:hover { background: var(--primary-light); }
+.btn-outline-custom { background: white; color: var(--primary); border: 1.5px solid var(--primary);
+  border-radius: 8px; padding: 10px 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+.btn-outline-custom:hover { background: var(--primary); color: white; }
+.btn-accent { background: var(--accent); color: white; border: none; border-radius: 8px;
+  padding: 10px 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+.btn-accent:hover { background: #ea6c05; }
+
+/* Complaints */
+.complaint-card { border: 1px solid var(--border); border-radius: 12px; padding: 16px; background: white;
+  transition: 0.2s; margin-bottom: 12px; }
+.complaint-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.07); }
+.c-cat { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.c-title { font-size: 0.9rem; font-weight: 700; margin: 4px 0; }
+.c-meta { font-size: 0.75rem; color: var(--text-muted); }
+
+/* Events */
+.event-card { border-radius: 14px; overflow: hidden; border: 1px solid var(--border); background: white; }
+.event-banner { height: 120px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
+.event-body { padding: 16px; }
+.event-title { font-size: 0.92rem; font-weight: 700; }
+.event-date { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+.event-tag { display: inline-block; padding: 3px 9px; border-radius: 20px; font-size: 0.68rem; font-weight: 600; margin-top: 8px; }
+
+/* Mentor */
+.mentor-card { border-radius: 14px; border: 1px solid var(--border); padding: 20px; background: white; text-align: center; }
+.mentor-avatar { width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 12px;
+  display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; color: white; }
+.mentor-name { font-size: 0.9rem; font-weight: 700; }
+.mentor-role { font-size: 0.75rem; color: var(--text-muted); margin-top: 3px; }
+.mentor-skills { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; margin-top: 10px; }
+.skill-tag { padding: 3px 8px; background: #f1f5f9; border-radius: 20px; font-size: 0.68rem; font-weight: 600; color: var(--text-muted); }
+
+/* Notif */
+.notif-item { padding: 14px; border-bottom: 1px solid #f1f5f9; display: flex; gap: 12px; }
+.notif-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center;
+  justify-content: center; font-size: 14px; flex-shrink: 0; }
+.notif-body .n-title { font-size: 0.83rem; font-weight: 600; }
+.notif-body .n-time { font-size: 0.73rem; color: var(--text-muted); margin-top: 3px; }
+.notif-body .n-msg { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+.notif-item.unread { background: #f8fafc; }
+
+/* Library */
+.book-card { border-radius: 12px; border: 1px solid var(--border); padding: 16px; background: white; }
+.book-cover { width: 48px; height: 64px; border-radius: 6px; display: flex; align-items: center;
+  justify-content: center; font-size: 20px; margin-right: 14px; flex-shrink: 0; }
+.book-title { font-size: 0.88rem; font-weight: 700; }
+.book-author { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+.book-avail { font-size: 0.72rem; font-weight: 600; margin-top: 6px; }
+
+/* Facilities */
+.facility-card { border-radius: 14px; border: 1px solid var(--border); padding: 20px; background: white; }
+.facility-icon { font-size: 2rem; margin-bottom: 10px; }
+.facility-name { font-size: 0.92rem; font-weight: 700; }
+.facility-detail { font-size: 0.78rem; color: var(--text-muted); margin-top: 6px; line-height: 1.5; }
+
+/* Chart containers */
+.chart-wrap { position: relative; height: 260px; }
+
+/* Breadcrumb */
+.breadcrumb-custom { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 6px; }
+.breadcrumb-custom span { color: var(--primary); font-weight: 600; }
+
+/* Toast */
+.toast-container-custom { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+.toast-item { background: #1e293b; color: white; padding: 12px 18px; border-radius: 10px;
+  font-size: 0.82rem; font-weight: 500; display: flex; align-items: center; gap: 8px;
+  animation: slideIn 0.3s; box-shadow: 0 8px 24px rgba(0,0,0,0.2); min-width: 260px; }
+@keyframes slideIn { from { transform: translateX(100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+.toast-item i { color: var(--accent); font-size: 14px; }
+
+/* Suggest modal */
+.suggestion-form { background: white; border-radius: 14px; padding: 24px; border: 1px solid var(--border); margin-bottom: 20px; }
+
+/* Progress */
+.progress-custom { height: 6px; background: #f1f5f9; border-radius: 99px; overflow: hidden; }
+.progress-bar-custom { height: 100%; border-radius: 99px; background: var(--primary-light); }
+
+/* Admin table actions */
+.tbl-action { padding: 4px 10px; border-radius: 6px; font-size: 0.72rem; font-weight: 600; cursor: pointer; border: none; transition: 0.15s; }
+.tbl-resolve { background: #dcfce7; color: #15803d; }
+.tbl-view { background: #dbeafe; color: #1d4ed8; }
+.tbl-delete { background: #fee2e2; color: #dc2626; }
+
+/* Mobile sidebar toggle */
+.sidebar-toggle { display: none; }
+@media (max-width: 768px) {
+  .sidebar-toggle { display: flex; }
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main-wrap { margin-left: 0; }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
+
+/* Forum */
+.forum-post { border: 1px solid var(--border); border-radius: 12px; padding: 16px; background: white; margin-bottom: 10px; }
+.forum-post .fp-user { font-size: 0.78rem; font-weight: 700; color: var(--primary); }
+.forum-post .fp-tag { font-size: 0.68rem; padding: 2px 8px; border-radius: 20px; margin-left: 6px; }
+.forum-post .fp-body { font-size: 0.83rem; margin-top: 8px; line-height: 1.5; }
+.forum-post .fp-meta { font-size: 0.72rem; color: var(--text-muted); margin-top: 8px; display: flex; gap: 16px; }
+
+/* Divider */
+.divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+/* Profile */
+.profile-cover { height: 120px; border-radius: 14px 14px 0 0; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); }
+.profile-avatar { width: 80px; height: 80px; border-radius: 50%; background: var(--accent);
+  color: white; font-size: 26px; font-weight: 800; display: flex; align-items: center; justify-content: center;
+  border: 4px solid white; margin-top: -40px; margin-left: 24px; }
+.profile-info { padding: 8px 24px 24px; }
+.profile-name { font-size: 1.15rem; font-weight: 800; }
+.profile-role-badge { display: inline-block; padding: 3px 10px; border-radius: 20px;
+  background: var(--accent-soft); color: var(--accent); font-size: 0.72rem; font-weight: 700; margin-left: 8px; }
+
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════ AUTH ══════════════════════════════════ -->
+<div id="authScreen">
+  <div class="auth-card">
+    <div class="auth-logo"><i class="fas fa-graduation-cap"></i></div>
+    <h2>PCCOER Portal</h2>
+    <p class="sub">Pimpri Chinchwad College of Engineering & Research</p>
+
+    <div class="role-tabs" id="roleTabs">
+      <div class="role-tab active" data-role="student" onclick="selectRole(this)"><i class="fas fa-user-graduate"></i><br>Student</div>
+      <div class="role-tab" data-role="faculty" onclick="selectRole(this)"><i class="fas fa-chalkboard-teacher"></i><br>Faculty</div>
+      <div class="role-tab" data-role="admin" onclick="selectRole(this)"><i class="fas fa-user-shield"></i><br>Admin</div>
+      <div class="role-tab" data-role="alumni" onclick="selectRole(this)"><i class="fas fa-user-tie"></i><br>Alumni</div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">College ID / PRN</label>
+      <input type="text" id="loginId" class="form-control" placeholder="e.g. PCCOER2021001" value="PCCOER2021001">
+    </div>
+    <div class="mb-4">
+      <label class="form-label">Password</label>
+      <input type="password" id="loginPass" class="form-control" placeholder="••••••••" value="demo123">
+    </div>
+    <button class="btn-login" onclick="doLogin()"><i class="fas fa-arrow-right-to-bracket me-2"></i>Login to Portal</button>
+
+    <div class="demo-creds">
+      <strong>Demo Mode</strong> — Enter any credentials. Select your role above to explore different dashboards.
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ APP ══════════════════════════════════ -->
+<div id="appScreen">
+  <!-- SIDEBAR -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+<div class="brand-logo">
+  <img src="pccoerimg.jpeg" alt="PCCOER Logo" class="college-logo">
+
+  <div class="brand-text">
+    <div class="name">PCCOER</div>
+    <div class="college">Student Support Portal</div>
+  </div>
+</div>
+    </div>
+    <div class="sidebar-user">
+      <div class="avatar-sm" id="sidebarAvatar">VS</div>
+      <div class="user-info">
+        <div class="u-name" id="sidebarName">Vedant S.</div>
+        <div class="u-role" id="sidebarRole">Student</div>
+      </div>
+    </div>
+    <div class="sidebar-nav" id="sidebarNav"></div>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="main-wrap">
+    <div class="topbar">
+      <button class="icon-btn sidebar-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+      <div class="topbar-title" id="topbarTitle">Dashboard</div>
+      <div class="topbar-actions">
+        <div class="icon-btn" onclick="showPage('notifications')" title="Notifications">
+          <i class="fas fa-bell"></i>
+          <span class="notif-dot"></span>
+        </div>
+        <div class="icon-btn" title="Search"><i class="fas fa-search"></i></div>
+        <div class="avatar-top" id="topAvatar" onclick="showPage('profile')">VS</div>
+      </div>
+    </div>
+    <div class="page-content" id="pageContent">
+      <!-- Pages injected here -->
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container-custom" id="toastContainer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+// ══════════════════ STATE ══════════════════
+let currentRole = 'student';
+let currentUser = {};
+let currentPage = 'dashboard';
+
+const DEMO_USERS = {
+  student: { name: 'Vedant Suryawanshi', initials: 'VS', prn: 'PCCOER2021001', dept: 'Computer Engineering', year: '3rd Year', email: 'vedant@pccoer.edu.in' },
+  faculty:  { name: 'Dr. Priya Kulkarni', initials: 'PK', prn: 'FAC001', dept: 'Computer Engineering', year: 'Assistant Professor', email: 'priya.k@pccoer.edu.in' },
+  admin:    { name: 'Admin Sharma', initials: 'AS', prn: 'ADM001', dept: 'Administration', year: 'Admin Officer', email: 'admin@pccoer.edu.in' },
+  alumni:   { name: 'Rahul Deshmukh', initials: 'RD', prn: 'PCCOER2018045', dept: 'Mechanical Engineering', year: 'Alumni 2022', email: 'rahul.d@gmail.com' },
+};
+
+const NAV_ITEMS = {
+  student: [
+    { section: 'Main' },
+    { id: 'dashboard', label: 'Dashboard', icon: 'fa-gauge-high' },
+    { id: 'profile', label: 'My Profile', icon: 'fa-user-circle' },
+    { section: 'Support' },
+    { id: 'complaints', label: 'Complaints', icon: 'fa-triangle-exclamation', badge: '2' },
+    { id: 'suggestions', label: 'Suggestions', icon: 'fa-lightbulb' },
+    { section: 'Mentorship' },
+    { id: 'mentors', label: 'Mentors & Alumni', icon: 'fa-users' },
+    { id: 'forum', label: 'Discussion Forum', icon: 'fa-comments' },
+    { section: 'Campus' },
+    { id: 'events', label: 'Events & Hackathons', icon: 'fa-calendar-star' },
+    { id: 'facilities', label: 'Campus Facilities', icon: 'fa-building-columns' },
+    { id: 'library', label: 'Library', icon: 'fa-book-open' },
+    { id: 'notifications', label: 'Notifications', icon: 'fa-bell', badge: '5' },
+  ],
+  faculty: [
+    { section: 'Main' },
+    { id: 'dashboard', label: 'Dashboard', icon: 'fa-gauge-high' },
+    { id: 'profile', label: 'My Profile', icon: 'fa-user-circle' },
+    { section: 'Management' },
+    { id: 'complaints', label: 'Complaints', icon: 'fa-triangle-exclamation', badge: '8' },
+    { id: 'suggestions', label: 'Suggestions', icon: 'fa-lightbulb' },
+    { id: 'events', label: 'Manage Events', icon: 'fa-calendar-star' },
+    { section: 'Campus' },
+    { id: 'mentors', label: 'Mentor Connect', icon: 'fa-users' },
+    { id: 'forum', label: 'Discussion Forum', icon: 'fa-comments' },
+    { id: 'library', label: 'Library', icon: 'fa-book-open' },
+    { id: 'notifications', label: 'Notifications', icon: 'fa-bell', badge: '3' },
+  ],
+  admin: [
+    { section: 'Main' },
+    { id: 'dashboard', label: 'Admin Dashboard', icon: 'fa-gauge-high' },
+    { id: 'profile', label: 'My Profile', icon: 'fa-user-circle' },
+    { section: 'Management' },
+    { id: 'admin-users', label: 'Manage Users', icon: 'fa-users-gear' },
+    { id: 'complaints', label: 'All Complaints', icon: 'fa-triangle-exclamation', badge: '12' },
+    { id: 'suggestions', label: 'Suggestions', icon: 'fa-lightbulb' },
+    { id: 'events', label: 'Manage Events', icon: 'fa-calendar-star' },
+    { section: 'Campus' },
+    { id: 'library', label: 'Manage Library', icon: 'fa-book-open' },
+    { id: 'facilities', label: 'Facilities', icon: 'fa-building-columns' },
+    { id: 'notifications', label: 'Notifications', icon: 'fa-bell', badge: '7' },
+  ],
+  alumni: [
+    { section: 'Main' },
+    { id: 'dashboard', label: 'Dashboard', icon: 'fa-gauge-high' },
+    { id: 'profile', label: 'My Profile', icon: 'fa-user-circle' },
+    { section: 'Contribute' },
+    { id: 'mentors', label: 'Mentor Students', icon: 'fa-users' },
+    { id: 'forum', label: 'Discussion Forum', icon: 'fa-comments' },
+    { id: 'events', label: 'Events', icon: 'fa-calendar-star' },
+    { id: 'notifications', label: 'Notifications', icon: 'fa-bell', badge: '2' },
+  ],
+};
+
+// Mock data
+const COMPLAINTS = [
+  { id: 'CMP001', title: 'Projector not working in Lab 3', category: 'Infrastructure', status: 'open', date: '01 May 2026', by: 'Vedant S.', desc: 'The projector in Computer Lab 3 has been malfunctioning for 3 days. Students are unable to attend practical sessions properly.' },
+  { id: 'CMP002', title: 'Ragging incident near canteen', category: 'Ragging', status: 'progress', date: '30 Apr 2026', by: 'Anonymous', desc: 'Senior students were pressuring juniors near canteen area during lunch break.' },
+  { id: 'CMP003', title: 'Library closing too early', category: 'Facilities', status: 'resolved', date: '28 Apr 2026', by: 'Sneha P.', desc: 'Library closes at 5pm but students need it till 8pm during exams.' },
+  { id: 'CMP004', title: 'WiFi not working in Block B', category: 'IT/Network', status: 'open', date: '27 Apr 2026', by: 'Rahul M.', desc: 'No internet connectivity in Block B for the past week.' },
+  { id: 'CMP005', title: 'Canteen food quality poor', category: 'Hygiene', status: 'closed', date: '25 Apr 2026', by: 'Priya K.', desc: 'Food quality has deteriorated significantly. Unhygienic conditions observed.' },
+];
+
+const EVENTS = [
+  { title: 'Smart India Hackathon 2026', date: '15–16 May 2026', tag: 'Hackathon', color: '#dbeafe', emoji: '💻', link: '#', slots: '50 left' },
+  { title: 'AI & ML Workshop', date: '10 May 2026', tag: 'Workshop', color: '#dcfce7', emoji: '🤖', link: '#', slots: '20 left' },
+  { title: 'Annual Tech Fest – TechNova', date: '22 May 2026', tag: 'Fest', color: '#ede9fe', emoji: '🎉', link: '#', slots: '200 left' },
+  { title: 'Campus Placement Drive – TCS', date: '5 May 2026', tag: 'Placement', color: '#fef3c7', emoji: '💼', link: '#', slots: 'Open' },
+  { title: 'Blood Donation Camp', date: '8 May 2026', tag: 'Social', color: '#fee2e2', emoji: '🩸', link: '#', slots: 'All Welcome' },
+  { title: 'Robotics Club Meet', date: '12 May 2026', tag: 'Club', color: '#ffedd5', emoji: '🤖', link: '#', slots: '30 left' },
+];
+
+const MENTORS = [
+  { name: 'Rahul Deshmukh', role: 'SDE @ Google | 2022 Alumni', skills: ['DSA', 'System Design', 'Go'], color: '#1d4ed8', initials: 'RD' },
+  { name: 'Ananya Joshi', role: 'ML Engineer @ Meta | 2021 Alumni', skills: ['ML', 'Python', 'PyTorch'], color: '#7c3aed', initials: 'AJ' },
+  { name: 'Karan Mehta', role: 'DevOps @ Infosys | 2020 Alumni', skills: ['Docker', 'K8s', 'AWS'], color: '#0f766e', initials: 'KM' },
+  { name: 'Pooja Salunke', role: 'Product Manager @ Swiggy', skills: ['Product', 'Analytics', 'UX'], color: '#b45309', initials: 'PS' },
+  { name: 'Dev Patil', role: 'Founder @ StartupX | 2019 Alumni', skills: ['Startup', 'VC', 'Strategy'], color: '#be185d', initials: 'DP' },
+  { name: 'Aishwarya R.', role: 'Frontend Dev @ Razorpay', skills: ['React', 'Tailwind', 'TS'], color: '#c2410c', initials: 'AR' },
+];
+
+const BOOKS = [
+  { title: 'Data Structures & Algorithms', author: 'Thomas H. Cormen', available: 3, total: 5, emoji: '📘', color: '#dbeafe' },
+  { title: 'Clean Code', author: 'Robert C. Martin', available: 0, total: 3, emoji: '📗', color: '#dcfce7' },
+  { title: 'Operating Systems Concepts', author: 'Silberschatz & Galvin', available: 2, total: 4, emoji: '📙', color: '#fef3c7' },
+  { title: 'Database Management Systems', author: 'Ramakrishnan & Gehrke', available: 5, total: 5, emoji: '📕', color: '#fee2e2' },
+  { title: 'Computer Networks', author: 'Andrew Tanenbaum', available: 1, total: 3, emoji: '📓', color: '#ede9fe' },
+  { title: 'Artificial Intelligence: A Modern Approach', author: 'Russell & Norvig', available: 2, total: 2, emoji: '📔', color: '#ffedd5' },
+];
+
+const FACILITIES = [
+  { icon: '🏋️', name: 'Gymnasium', detail: 'Open Mon–Sat 6am–8pm. State-of-art equipment. Personal trainer available Tue & Thu.', status: 'Open' },
+  { icon: '🔬', name: 'Research Labs', detail: '12 specialized labs: AI/ML, IoT, Cybersecurity, Robotics. Booking via Lab Management System.', status: 'Open' },
+  { icon: '⚽', name: 'Sports Complex', detail: 'Cricket ground, football, basketball, badminton courts, table tennis. Coaching Mon/Wed/Fri.', status: 'Open' },
+  { icon: '🍽️', name: 'Canteen', detail: 'Serves 3 meals daily. Veg & non-veg options. Accepts UPI & college ID card.', status: 'Open' },
+  { icon: '🎭', name: 'Auditorium', detail: 'Capacity: 1200. Fully AC, advanced AV system. Book 7 days in advance via admin.', status: 'Available' },
+  { icon: '🎨', name: 'Art & Culture Club', detail: 'Music, dance, drama, painting. Meets every Friday 4–6pm. Open to all branches.', status: 'Open' },
+];
+
+const NOTIFICATIONS = [
+  { icon: 'fa-triangle-exclamation', color: '#fef3c7', iconColor: '#b45309', title: 'Complaint #CMP001 Updated', msg: 'Your projector complaint has been assigned to maintenance team.', time: '10 min ago', unread: true },
+  { icon: 'fa-calendar-star', color: '#dbeafe', iconColor: '#1d4ed8', title: 'New Event: SIH 2026', msg: 'Smart India Hackathon registrations now open. Last date: 10 May.', time: '1 hour ago', unread: true },
+  { icon: 'fa-user-tie', color: '#dcfce7', iconColor: '#15803d', title: 'Mentor Request Accepted', msg: 'Rahul Deshmukh has accepted your mentorship request.', time: '3 hours ago', unread: true },
+  { icon: 'fa-book-open', color: '#ede9fe', iconColor: '#7c3aed', title: 'Book Due Tomorrow', msg: '"Clean Code" is due for return tomorrow. Please return on time.', time: '5 hours ago', unread: false },
+  { icon: 'fa-lightbulb', color: '#ffedd5', iconColor: '#c2410c', title: 'Suggestion Reviewed', msg: 'Your suggestion about extended library hours has been reviewed.', time: '1 day ago', unread: false },
+];
+
+const FORUM_POSTS = [
+  { user: 'Ananya J. (Alumni)', tag: 'Alumni', tagColor: '#dcfce7', tagText: '#15803d', body: 'Tips for GATE 2027 prep: Start with Discrete Maths and DBMS. Use PYQs extensively. Target 80+ in CS section. Happy to mentor serious aspirants — DM me!', likes: 34, replies: 8, time: '2h ago' },
+  { user: 'Vedant S. (Student)', tag: 'Student', tagColor: '#dbeafe', tagText: '#1d4ed8', body: 'Anyone working on a web dev project for SIH? Looking for backend developer (Node.js) and a UI/UX designer. Team of 6 needed. Comment below!', likes: 18, replies: 12, time: '5h ago' },
+  { user: 'Dr. Priya K. (Faculty)', tag: 'Faculty', tagColor: '#ede9fe', tagText: '#7c3aed', body: 'Reminder: AI/ML Workshop on 10 May. Pre-register to confirm your seat. It covers basics to deployment with FastAPI. Hands-on sessions included.', likes: 45, replies: 5, time: '1d ago' },
+  { user: 'Karan M. (Alumni)', tag: 'Alumni', tagColor: '#dcfce7', tagText: '#15803d', body: 'Just completed AWS Solutions Architect exam. Resources: Adrian Cantrill\'s course + Stephane Maarek. 2 months of consistent prep. AMA!', likes: 62, replies: 21, time: '2d ago' },
+];
+
+// ══════════════════ AUTH ══════════════════
+function selectRole(el) {
+  document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  currentRole = el.dataset.role;
+}
+
+function doLogin() {
+  const id = document.getElementById('loginId').value.trim();
+  if (!id) { showToast('Please enter your College ID', 'warning'); return; }
+  currentUser = DEMO_USERS[currentRole];
+  document.getElementById('authScreen').style.display = 'none';
+  document.getElementById('appScreen').style.display = 'block';
+  initApp();
+}
+
+// ══════════════════ APP INIT ══════════════════
+function initApp() {
+  document.getElementById('sidebarAvatar').textContent = currentUser.initials;
+  document.getElementById('sidebarName').textContent = currentUser.name.split(' ')[0] + ' ' + currentUser.name.split(' ')[1][0] + '.';
+  document.getElementById('sidebarRole').textContent = currentRole.charAt(0).toUpperCase() + currentRole.slice(1);
+  document.getElementById('topAvatar').textContent = currentUser.initials;
+  buildNav();
+  showPage('dashboard');
+}
+
+function buildNav() {
+  const nav = document.getElementById('sidebarNav');
+  nav.innerHTML = '';
+  const items = NAV_ITEMS[currentRole] || NAV_ITEMS.student;
+  items.forEach(item => {
+    if (item.section) {
+      nav.innerHTML += `<div class="nav-section">${item.section}</div>`;
+    } else {
+      nav.innerHTML += `<div class="nav-item" id="nav-${item.id}" onclick="showPage('${item.id}')">
+        <i class="fas ${item.icon}"></i> ${item.label}
+        ${item.badge ? `<span class="nav-badge">${item.badge}</span>` : ''}
+      </div>`;
+    }
+  });
+}
+
+function showPage(id) {
+  currentPage = id;
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const navEl = document.getElementById('nav-' + id);
+  if (navEl) navEl.classList.add('active');
+
+  const titles = {
+    dashboard: 'Dashboard', profile: 'My Profile', complaints: 'Complaints & Grievances',
+    suggestions: 'Suggestions', mentors: 'Mentors & Alumni', forum: 'Discussion Forum',
+    events: 'Events & Hackathons', facilities: 'Campus Facilities', library: 'Library',
+    notifications: 'Notifications', 'admin-users': 'Manage Users'
+  };
+  document.getElementById('topbarTitle').textContent = titles[id] || 'Dashboard';
+  const content = document.getElementById('pageContent');
+
+  const renders = {
+    dashboard: renderDashboard,
+    profile: renderProfile,
+    complaints: renderComplaints,
+    suggestions: renderSuggestions,
+    mentors: renderMentors,
+    forum: renderForum,
+    events: renderEvents,
+    facilities: renderFacilities,
+    library: renderLibrary,
+    notifications: renderNotifications,
+    'admin-users': renderAdminUsers,
+  };
+  content.innerHTML = (renders[id] || renderDashboard)();
+  setTimeout(initCharts, 50);
+}
+
+// ══════════════════ PAGES ══════════════════
+
+function renderDashboard() {
+  if (currentRole === 'admin') return renderAdminDashboard();
+  if (currentRole === 'faculty') return renderFacultyDashboard();
+  if (currentRole === 'alumni') return renderAlumniDashboard();
+
+  return `
+  <div class="page-header">
+    <div class="breadcrumb-custom">Home / <span>Dashboard</span></div>
+    <h1>Welcome back, ${currentUser.name.split(' ')[0]}! 👋</h1>
+    <p>Here's what's happening in your campus today.</p>
+  </div>
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-3"><div class="stat-card">
+      <div class="stat-icon icon-blue"><i class="fas fa-triangle-exclamation"></i></div>
+      <div class="stat-value">2</div>
+      <div class="stat-label">Active Complaints</div>
+      <div class="stat-delta up"><i class="fas fa-arrow-up"></i> 1 new this week</div>
+    </div></div>
+    <div class="col-6 col-md-3"><div class="stat-card">
+      <div class="stat-icon icon-green"><i class="fas fa-calendar-check"></i></div>
+      <div class="stat-value">6</div>
+      <div class="stat-label">Upcoming Events</div>
+      <div class="stat-delta up"><i class="fas fa-arrow-up"></i> 2 new events</div>
+    </div></div>
+    <div class="col-6 col-md-3"><div class="stat-card">
+      <div class="stat-icon icon-purple"><i class="fas fa-users"></i></div>
+      <div class="stat-value">1</div>
+      <div class="stat-label">Active Mentors</div>
+      <div class="stat-delta up"><i class="fas fa-check"></i> Request accepted</div>
+    </div></div>
+    <div class="col-6 col-md-3"><div class="stat-card">
+      <div class="stat-icon icon-amber"><i class="fas fa-bell"></i></div>
+      <div class="stat-value">5</div>
+      <div class="stat-label">Notifications</div>
+      <div class="stat-delta down"><i class="fas fa-circle"></i> 3 unread</div>
+    </div></div>
+  </div>
+  <div class="row g-3 mb-4">
+    <div class="col-md-8">
+      <div class="card p-3">
+        <div class="card-title mb-1">Complaint Activity</div>
+        <div class="card-sub mb-3">Your complaint resolution history</div>
+        <div class="chart-wrap"><canvas id="chart1" role="img" aria-label="Complaint activity bar chart">Complaint data</canvas></div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card p-3 h-100">
+        <div class="card-title mb-1">Status Breakdown</div>
+        <div class="card-sub mb-3">All complaints this semester</div>
+        <div class="chart-wrap"><canvas id="chart2" role="img" aria-label="Complaint status pie chart">Status breakdown</canvas></div>
+      </div>
+    </div>
+  </div>
+  <div class="row g-3">
+    <div class="col-md-6">
+      <div class="card p-0">
+        <div class="p-3 border-bottom"><div class="card-title">Recent Complaints</div></div>
+        ${COMPLAINTS.slice(0,3).map(c => `
+        <div class="d-flex align-items-center px-3 py-2 border-bottom">
+          <div class="flex-grow-1">
+            <div style="font-size:0.83rem;font-weight:600">${c.title}</div>
+            <div style="font-size:0.72rem;color:var(--text-muted)">${c.category} · ${c.date}</div>
+          </div>
+          <span class="badge-status badge-${c.status}">${c.status.charAt(0).toUpperCase()+c.status.slice(1)}</span>
+        </div>`).join('')}
+        <div class="p-2 text-center"><button class="btn-outline-custom" style="padding:6px 16px;font-size:0.78rem" onclick="showPage('complaints')">View All</button></div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card p-0">
+        <div class="p-3 border-bottom"><div class="card-title">Upcoming Events</div></div>
+        ${EVENTS.slice(0,3).map(e => `
+        <div class="d-flex align-items-center px-3 py-2 border-bottom">
+          <div style="font-size:1.4rem;margin-right:12px">${e.emoji}</div>
+          <div class="flex-grow-1">
+            <div style="font-size:0.83rem;font-weight:600">${e.title}</div>
+            <div style="font-size:0.72rem;color:var(--text-muted)">${e.date}</div>
+          </div>
+          <span class="event-tag" style="background:${e.color};color:var(--text-main);font-size:0.65rem">${e.tag}</span>
+        </div>`).join('')}
+        <div class="p-2 text-center"><button class="btn-outline-custom" style="padding:6px 16px;font-size:0.78rem" onclick="showPage('events')">View All</button></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderAdminDashboard() {
+  return `
+  <div class="page-header">
+    <div class="breadcrumb-custom">Home / <span>Admin Dashboard</span></div>
+    <h1>Admin Control Panel</h1>
+    <p>System-wide overview and management tools.</p>
+  </div>
+  <div class="row g-3 mb-4">
+    ${[
+      { label:'Total Users', val:'1,248', icon:'fa-users', col:'icon-blue', delta:'+12 this week', up:true },
+      { label:'Open Complaints', val:'12', icon:'fa-triangle-exclamation', col:'icon-red', delta:'3 urgent', up:false },
+      { label:'Events Active', val:'6', icon:'fa-calendar', col:'icon-green', delta:'+2 new', up:true },
+      { label:'Library Books', val:'842', icon:'fa-book', col:'icon-amber', delta:'8 overdue', up:false },
+    ].map(s=>`<div class="col-6 col-md-3"><div class="stat-card">
+      <div class="stat-icon ${s.col}"><i class="fas ${s.icon}"></i></div>
+      <div class="stat-value">${s.val}</div>
+      <div class="stat-label">${s.label}</div>
+      <div class="stat-delta ${s.up?'up':'down'}"><i class="fas fa-arrow-${s.up?'up':'down'}"></i> ${s.delta}</div>
+    </div></div>`).join('')}
+  </div>
+  <div class="row g-3 mb-4">
+    <div class="col-md-8">
+      <div class="card p-3">
+        <div class="card-title mb-1">Monthly Complaint Volume</div>
+        <div class="card-sub mb-3">Complaints received & resolved per month</div>
+        <div class="chart-wrap"><canvas id="chart1" role="img" aria-label="Monthly complaint volume">Complaint volume</canvas></div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card p-3">
+        <div class="card-title mb-1">User Distribution</div>
+        <div class="card-sub mb-3">By role</div>
+        <div class="chart-wrap"><canvas id="chart2" role="img" aria-label="User role distribution">User distribution</canvas></div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+      <div class="card-title">Recent Complaints — All Users</div>
+      <button class="btn-accent" style="padding:6px 14px;font-size:0.78rem" onclick="showPage('complaints')">Manage All</button>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-custom mb-0">
+        <thead><tr><th>ID</th><th>Title</th><th>Category</th><th>By</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          ${COMPLAINTS.map(c=>`<tr>
+            <td style="font-weight:700;color:var(--primary);font-size:0.78rem">${c.id}</td>
+            <td>${c.title}</td>
+            <td><span style="background:#f1f5f9;padding:3px 8px;border-radius:20px;font-size:0.7rem;font-weight:600">${c.category}</span></td>
+            <td>${c.by}</td>
+            <td>${c.date}</td>
+            <td><span class="badge-status badge-${c.status}">${c.status}</span></td>
+            <td>
+              <button class="tbl-action tbl-view" onclick="showToast('Viewing ${c.id}','info')">View</button>
+              <button class="tbl-action tbl-resolve ms-1" onclick="showToast('${c.id} marked resolved','success')">Resolve</button>
+            </td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+function renderFacultyDashboard() {
+  return `
+  <div class="page-header">
+    <h1>Faculty Dashboard</h1>
+    <p>Welcome, ${currentUser.name}. Here's your department overview.</p>
+  </div>
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-3"><div class="stat-card">
+      <div class="stat-icon icon-blue"><i class="fas fa-users"></i></div>
+      <div class="stat-value">68</div><div class="stat-label">Students Mentored</div>
+    </div></div>
+    <div class="col-6 col-md-3"><div class="stat-card">
+      <div class="stat-icon icon-red"><i class="fas fa-triangle-exclamation"></i></div>
+      <div class="stat-value">8</div><div class="stat-label">Pending Complaints</div>
+    </div></div>
+    <div class="col-6 col-md-3"><div class="stat-card">
+      <div class="stat-icon icon-green"><i class="fas fa-calendar"></i></div>
+      <div class="stat-value">2</div><div class="stat-label">Events Created</div>
+    </div></div>
+    <div class="col-6 col-md-3"><div class="stat-card">
+      <div class="stat-icon icon-amber"><i class="fas fa-lightbulb"></i></div>
+      <div class="stat-value">15</div><div class="stat-label">Suggestions Reviewed</div>
+    </div></div>
+  </div>
+  <div class="row g-3">
+    <div class="col-md-7">
+      <div class="card p-3">
+        <div class="card-title mb-3">Department Complaint Trend</div>
+        <div class="chart-wrap"><canvas id="chart1" role="img" aria-label="Complaint trend">Trend</canvas></div>
+      </div>
+    </div>
+    <div class="col-md-5">
+      <div class="card p-3">
+        <div class="card-title mb-3">Complaint Categories</div>
+        <div class="chart-wrap"><canvas id="chart2" role="img" aria-label="Categories">Categories</canvas></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderAlumniDashboard() {
+  return `
+  <div class="page-header">
+    <h1>Alumni Dashboard</h1>
+    <p>Give back to your alma mater. Help students grow.</p>
+  </div>
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-4"><div class="stat-card">
+      <div class="stat-icon icon-purple"><i class="fas fa-handshake"></i></div>
+      <div class="stat-value">3</div><div class="stat-label">Mentorship Requests</div>
+      <div class="stat-delta up"><i class="fas fa-arrow-up"></i> 1 new today</div>
+    </div></div>
+    <div class="col-6 col-md-4"><div class="stat-card">
+      <div class="stat-icon icon-green"><i class="fas fa-comment"></i></div>
+      <div class="stat-value">12</div><div class="stat-label">Forum Contributions</div>
+    </div></div>
+    <div class="col-6 col-md-4"><div class="stat-card">
+      <div class="stat-icon icon-blue"><i class="fas fa-star"></i></div>
+      <div class="stat-value">4.8</div><div class="stat-label">Mentor Rating</div>
+    </div></div>
+  </div>
+  <div class="card p-3">
+    <div class="card-title mb-3">Your Mentorship Sessions (2026)</div>
+    <div class="chart-wrap"><canvas id="chart1" role="img" aria-label="Mentorship sessions">Sessions</canvas></div>
+  </div>`;
+}
+
+function renderProfile() {
+  return `
+  <div class="page-header"><h1>My Profile</h1></div>
+  <div class="row g-3">
+    <div class="col-md-4">
+      <div class="card overflow-hidden">
+        <div class="profile-cover"></div>
+        <div class="profile-avatar">${currentUser.initials}</div>
+        <div class="profile-info">
+          <div class="profile-name">${currentUser.name} <span class="profile-role-badge">${currentRole}</span></div>
+          <div style="font-size:0.8rem;color:var(--text-muted);margin-top:4px">${currentUser.prn}</div>
+          <div class="divider"></div>
+          <div style="font-size:0.82rem"><i class="fas fa-building me-2" style="color:var(--text-muted)"></i>${currentUser.dept}</div>
+          <div style="font-size:0.82rem;margin-top:6px"><i class="fas fa-layer-group me-2" style="color:var(--text-muted)"></i>${currentUser.year}</div>
+          <div style="font-size:0.82rem;margin-top:6px"><i class="fas fa-envelope me-2" style="color:var(--text-muted)"></i>${currentUser.email}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="card p-4">
+        <div class="card-title mb-3">Edit Profile</div>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label-custom">Full Name</label>
+            <input type="text" class="form-control-custom" value="${currentUser.name}">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-custom">Email</label>
+            <input type="email" class="form-control-custom" value="${currentUser.email}">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-custom">Department</label>
+            <input type="text" class="form-control-custom" value="${currentUser.dept}">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-custom">Phone</label>
+            <input type="tel" class="form-control-custom" placeholder="+91 9876543210">
+          </div>
+          <div class="col-12">
+            <label class="form-label-custom">About Me</label>
+            <textarea class="form-control-custom" rows="3" placeholder="Tell us about yourself..."></textarea>
+          </div>
+          <div class="col-12">
+            <button class="btn-primary-custom" onclick="showToast('Profile updated successfully!','success')"><i class="fas fa-save me-2"></i>Save Changes</button>
+          </div>
+        </div>
+      </div>
+      <div class="card p-4 mt-3">
+        <div class="card-title mb-3">Change Password</div>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label-custom">Current Password</label>
+            <input type="password" class="form-control-custom" placeholder="••••••••">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-custom">New Password</label>
+            <input type="password" class="form-control-custom" placeholder="••••••••">
+          </div>
+          <div class="col-12">
+            <button class="btn-outline-custom" onclick="showToast('Password changed!','success')"><i class="fas fa-lock me-2"></i>Update Password</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderComplaints() {
+  const isAdmin = currentRole === 'admin' || currentRole === 'faculty';
+  return `
+  <div class="page-header">
+    <div class="d-flex justify-content-between align-items-start">
+      <div>
+        <h1>Complaints & Grievances</h1>
+        <p>Track and manage all campus complaints.</p>
+      </div>
+      ${!isAdmin ? `<button class="btn-accent" onclick="showComplaintForm()"><i class="fas fa-plus me-2"></i>New Complaint</button>` : ''}
+    </div>
+  </div>
+  <div id="complaintFormContainer"></div>
+  <div class="row g-2 mb-4">
+    ${['All','Open','In Progress','Resolved','Ragging'].map((f,i)=>`
+    <div class="col-auto">
+      <button class="btn-outline-custom" style="padding:6px 14px;font-size:0.78rem;${i===0?'background:var(--primary);color:white;':''}" onclick="filterComplaints('${f}')">${f}</button>
+    </div>`).join('')}
+  </div>
+  <div id="complaintsList">
+    ${COMPLAINTS.map(c=>`
+    <div class="complaint-card">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <div style="font-size:0.72rem;font-weight:700;color:var(--text-muted);letter-spacing:0.5px">${c.category.toUpperCase()} · ${c.id}</div>
+          <div class="c-title">${c.title}</div>
+          <div class="c-meta">Filed by ${c.by} · ${c.date}</div>
+          <div style="font-size:0.78rem;color:var(--text-muted);margin-top:6px;line-height:1.5">${c.desc}</div>
+        </div>
+        <div class="d-flex flex-column align-items-end gap-2 ms-3">
+          <span class="badge-status badge-${c.status}">${c.status.charAt(0).toUpperCase()+c.status.slice(1)}</span>
+          ${isAdmin ? `<button class="tbl-action tbl-resolve" onclick="showToast('${c.id} marked resolved','success')">Resolve</button>` : ''}
+        </div>
+      </div>
+      ${c.category==='Ragging'?`<div style="margin-top:10px;padding:8px 12px;background:#fee2e2;border-radius:8px;font-size:0.75rem;color:#dc2626;font-weight:600"><i class="fas fa-shield-halved me-1"></i>Ragging complaint — handled confidentially under UGC regulations.</div>`:''}
+    </div>`).join('')}
+  </div>`;
+}
+
+function showComplaintForm() {
+  const fc = document.getElementById('complaintFormContainer');
+  fc.innerHTML = `
+  <div class="card p-4 mb-4">
+    <div class="card-title mb-3">Register New Complaint</div>
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label-custom">Complaint Category</label>
+        <select class="form-select-custom">
+          <option>Infrastructure</option><option>IT/Network</option><option>Hygiene</option>
+          <option>Academic</option><option>Ragging</option><option>Facilities</option><option>Other</option>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label-custom">Priority</label>
+        <select class="form-select-custom"><option>Normal</option><option>High</option><option>Urgent</option></select>
+      </div>
+      <div class="col-12">
+        <label class="form-label-custom">Complaint Title</label>
+        <input type="text" class="form-control-custom" placeholder="Brief title of your complaint">
+      </div>
+      <div class="col-12">
+        <label class="form-label-custom">Description</label>
+        <textarea class="form-control-custom" rows="4" placeholder="Describe your complaint in detail..."></textarea>
+      </div>
+      <div class="col-12">
+        <label class="form-label-custom">Attach Evidence (Optional)</label>
+        <div style="border:2px dashed var(--border);border-radius:8px;padding:20px;text-align:center;cursor:pointer;color:var(--text-muted);font-size:0.82rem">
+          <i class="fas fa-cloud-upload-alt" style="font-size:1.5rem;margin-bottom:6px;display:block"></i>
+          Click to upload images/videos (Max 10MB)
+        </div>
+      </div>
+      <div class="col-12">
+        <label style="display:flex;align-items:center;gap:8px;font-size:0.82rem;cursor:pointer">
+          <input type="checkbox"> Submit anonymously (name will be hidden from others)
+        </label>
+      </div>
+      <div class="col-12 d-flex gap-2">
+        <button class="btn-primary-custom" onclick="submitComplaint()"><i class="fas fa-paper-plane me-2"></i>Submit Complaint</button>
+        <button class="btn-outline-custom" onclick="document.getElementById('complaintFormContainer').innerHTML=''">Cancel</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function submitComplaint() {
+  document.getElementById('complaintFormContainer').innerHTML = '';
+  showToast('Complaint submitted successfully! ID: CMP006', 'success');
+}
+
+function filterComplaints(f) { showToast(`Filtering: ${f}`, 'info'); }
+
+function renderSuggestions() {
+  const SUGGESTIONS = [
+    { title: 'Extended Library Hours', by: 'Vedant S.', date: '28 Apr', votes: 34, status: 'Under Review', desc: 'Library should be open till 10pm during exam season.' },
+    { title: 'Add more EV charging points', by: 'Sneha P.', date: '25 Apr', votes: 18, status: 'Approved', desc: 'Many students now use electric vehicles. Need more charging stations.' },
+    { title: 'Online Timetable Access', by: 'Rahul M.', date: '22 Apr', votes: 52, status: 'Implemented', desc: 'Provide digital timetable access through portal.' },
+  ];
+  return `
+  <div class="page-header">
+    <div class="d-flex justify-content-between align-items-start">
+      <div><h1>Suggestions</h1><p>Share ideas to improve campus life.</p></div>
+    </div>
+  </div>
+  <div class="suggestion-form">
+    <div class="card-title mb-3">Submit a Suggestion</div>
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label-custom">Suggestion Title</label>
+        <input type="text" class="form-control-custom" placeholder="e.g. Better WiFi in hostel">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label-custom">Category</label>
+        <select class="form-select-custom"><option>Academics</option><option>Infrastructure</option><option>Events</option><option>Digital</option><option>Other</option></select>
+      </div>
+      <div class="col-12">
+        <label class="form-label-custom">Details</label>
+        <textarea class="form-control-custom" rows="3" placeholder="Explain your suggestion..."></textarea>
+      </div>
+      <div class="col-12">
+        <button class="btn-primary-custom" onclick="showToast('Suggestion submitted! Thank you.','success')"><i class="fas fa-lightbulb me-2"></i>Submit Suggestion</button>
+      </div>
+    </div>
+  </div>
+  ${SUGGESTIONS.map(s=>`
+  <div class="complaint-card">
+    <div class="d-flex justify-content-between align-items-start">
+      <div class="flex-grow-1">
+        <div class="c-title">${s.title}</div>
+        <div class="c-meta">${s.by} · ${s.date}</div>
+        <div style="font-size:0.78rem;color:var(--text-muted);margin-top:6px">${s.desc}</div>
+      </div>
+      <div class="d-flex flex-column align-items-end gap-2 ms-3">
+        <span class="badge-status ${s.status==='Implemented'?'badge-resolved':s.status==='Approved'?'badge-progress':'badge-open'}">${s.status}</span>
+        <button onclick="showToast('Voted! 👍','success')" style="background:none;border:1.5px solid var(--border);border-radius:8px;padding:4px 10px;font-size:0.72rem;cursor:pointer;font-weight:600">
+          <i class="fas fa-thumbs-up"></i> ${s.votes}
+        </button>
+      </div>
+    </div>
+  </div>`).join('')}`;
+}
+
+function renderMentors() {
+  return `
+  <div class="page-header">
+    <h1>Mentors & Alumni</h1>
+    <p>Connect with verified seniors and alumni for guidance.</p>
+  </div>
+  <div class="row g-2 mb-4">
+    <div class="col-auto"><input type="text" class="form-control-custom" placeholder="Search by skill, company..." style="width:260px"></div>
+    <div class="col-auto"><select class="form-select-custom" style="width:160px"><option>All Fields</option><option>Web Dev</option><option>ML/AI</option><option>DevOps</option><option>Product</option></select></div>
+  </div>
+  <div class="row g-3">
+    ${MENTORS.map(m=>`
+    <div class="col-md-4 col-6">
+      <div class="mentor-card">
+        <div class="mentor-avatar" style="background:${m.color}">${m.initials}</div>
+        <div class="mentor-name">${m.name}</div>
+        <div class="mentor-role">${m.role}</div>
+        <div class="mentor-skills">${m.skills.map(s=>`<span class="skill-tag">${s}</span>`).join('')}</div>
+        <div class="d-flex gap-2 justify-content-center mt-3">
+          <button class="btn-primary-custom" style="padding:6px 14px;font-size:0.75rem" onclick="showToast('Mentorship request sent to ${m.name}!','success')">Request</button>
+          <button class="btn-outline-custom" style="padding:6px 14px;font-size:0.75rem" onclick="showToast('Message sent!','info')">Message</button>
+        </div>
+      </div>
+    </div>`).join('')}
+  </div>`;
+}
+
+function renderForum() {
+  return `
+  <div class="page-header"><h1>Discussion Forum</h1><p>Ask questions, share knowledge, connect with peers.</p></div>
+  <div class="card p-4 mb-4">
+    <div class="card-title mb-3">New Post</div>
+    <textarea class="form-control-custom" rows="3" placeholder="Ask a question or share knowledge with your community..."></textarea>
+    <div class="d-flex gap-2 mt-3">
+      <button class="btn-primary-custom" onclick="showToast('Post published!','success')"><i class="fas fa-paper-plane me-2"></i>Post</button>
+      <select class="form-select-custom" style="width:180px"><option>General</option><option>Placements</option><option>Technical</option><option>Events</option><option>Study Groups</option></select>
+    </div>
+  </div>
+  ${FORUM_POSTS.map(p=>`
+  <div class="forum-post">
+    <div style="display:flex;align-items:center">
+      <span class="fp-user">${p.user}</span>
+      <span class="fp-tag" style="background:${p.tagColor};color:${p.tagText}">${p.tag}</span>
+      <span style="font-size:0.72rem;color:var(--text-muted);margin-left:auto">${p.time}</span>
+    </div>
+    <div class="fp-body">${p.body}</div>
+    <div class="fp-meta">
+      <span style="cursor:pointer" onclick="showToast('Liked!','success')"><i class="fas fa-heart me-1"></i>${p.likes} likes</span>
+      <span style="cursor:pointer"><i class="fas fa-comment me-1"></i>${p.replies} replies</span>
+      <span style="cursor:pointer" onclick="showToast('Shared!','info')"><i class="fas fa-share me-1"></i>Share</span>
+    </div>
+  </div>`).join('')}`;
+}
+
+function renderEvents() {
+  const isManager = currentRole === 'admin' || currentRole === 'faculty';
+  return `
+  <div class="page-header">
+    <div class="d-flex justify-content-between align-items-start">
+      <div><h1>Events & Hackathons</h1><p>Stay updated with campus events.</p></div>
+      ${isManager ? `<button class="btn-accent" onclick="showToast('Event creation form opened','info')"><i class="fas fa-plus me-2"></i>Add Event</button>` : ''}
+    </div>
+  </div>
+  <div class="row g-3">
+    ${EVENTS.map(e=>`
+    <div class="col-md-4 col-sm-6">
+      <div class="event-card">
+        <div class="event-banner" style="background:${e.color}">${e.emoji}</div>
+        <div class="event-body">
+          <div class="event-title">${e.title}</div>
+          <div class="event-date"><i class="fas fa-calendar me-1"></i>${e.date}</div>
+          <div class="d-flex justify-content-between align-items-center mt-2">
+            <span class="event-tag" style="background:${e.color};color:var(--text-main)">${e.tag}</span>
+            <span style="font-size:0.72rem;color:var(--text-muted)"><i class="fas fa-users me-1"></i>${e.slots}</span>
+          </div>
+          <div class="d-flex gap-2 mt-3">
+            <button class="btn-primary-custom" style="flex:1;padding:8px;font-size:0.78rem" onclick="showToast('Registered for ${e.title}!','success')">Register</button>
+            ${isManager?`<button class="tbl-action tbl-delete" onclick="showToast('Event deleted','info')"><i class="fas fa-trash"></i></button>`:''}
+          </div>
+        </div>
+      </div>
+    </div>`).join('')}
+  </div>`;
+}
+
+function renderFacilities() {
+  return `
+  <div class="page-header"><h1>Campus Facilities</h1><p>Everything available on campus for students.</p></div>
+  <div class="row g-3">
+    ${FACILITIES.map(f=>`
+    <div class="col-md-4 col-sm-6">
+      <div class="facility-card">
+        <div class="facility-icon">${f.icon}</div>
+        <div class="facility-name">${f.name}</div>
+        <div style="margin-top:4px"><span class="badge-status badge-resolved" style="font-size:0.65rem">${f.status}</span></div>
+        <div class="facility-detail">${f.detail}</div>
+      </div>
+    </div>`).join('')}
+  </div>`;
+}
+
+function renderLibrary() {
+  const isAdmin2 = currentRole === 'admin';
+  return `
+  <div class="page-header">
+    <div class="d-flex justify-content-between align-items-start">
+      <div><h1>Library</h1><p>Search, borrow and return books.</p></div>
+      ${isAdmin2?`<button class="btn-accent" onclick="showToast('Add book form','info')"><i class="fas fa-plus me-2"></i>Add Book</button>`:''}
+    </div>
+  </div>
+  <div class="d-flex gap-2 mb-4">
+    <input type="text" class="form-control-custom" placeholder="Search books, authors, subjects..." style="max-width:380px">
+    <button class="btn-primary-custom" onclick="showToast('Searching...','info')"><i class="fas fa-search me-2"></i>Search</button>
+  </div>
+  <div class="row g-3">
+    ${BOOKS.map(b=>`
+    <div class="col-md-6">
+      <div class="book-card d-flex align-items-center">
+        <div class="book-cover" style="background:${b.color}">${b.emoji}</div>
+        <div class="flex-grow-1">
+          <div class="book-title">${b.title}</div>
+          <div class="book-author">${b.author}</div>
+          <div class="book-avail" style="color:${b.available>0?'var(--success)':'var(--danger)'}">
+            ${b.available>0?`${b.available} of ${b.total} copies available`:'Currently unavailable'}
+          </div>
+        </div>
+        <div class="ms-2">
+          ${b.available>0
+            ? `<button class="btn-primary-custom" style="padding:6px 12px;font-size:0.75rem" onclick="showToast('Book reserved!','success')">Reserve</button>`
+            : `<button class="btn-outline-custom" style="padding:6px 12px;font-size:0.75rem" onclick="showToast('Added to waitlist!','info')">Waitlist</button>`}
+        </div>
+      </div>
+    </div>`).join('')}
+  </div>`;
+}
+
+function renderNotifications() {
+  return `
+  <div class="page-header"><h1>Notifications</h1><p>Stay up to date with all updates.</p></div>
+  <div class="card p-0">
+    <div class="p-3 border-bottom d-flex justify-content-between">
+      <div class="card-title">All Notifications</div>
+      <button style="background:none;border:none;font-size:0.78rem;font-weight:600;color:var(--primary);cursor:pointer" onclick="showToast('All marked as read','success')">Mark all as read</button>
+    </div>
+    ${NOTIFICATIONS.map(n=>`
+    <div class="notif-item ${n.unread?'unread':''}">
+      <div class="notif-icon" style="background:${n.color}"><i class="fas ${n.icon}" style="color:${n.iconColor}"></i></div>
+      <div class="notif-body flex-grow-1">
+        <div class="n-title">${n.title} ${n.unread?'<span style="width:7px;height:7px;background:var(--accent);border-radius:50%;display:inline-block;margin-left:4px"></span>':''}</div>
+        <div class="n-msg">${n.msg}</div>
+        <div class="n-time">${n.time}</div>
+      </div>
+    </div>`).join('')}
+  </div>`;
+}
+
+function renderAdminUsers() {
+  const USERS = [
+    { name:'Vedant Suryawanshi', prn:'PCCOER2021001', role:'Student', dept:'Computer Engg', status:'Active' },
+    { name:'Dr. Priya Kulkarni', prn:'FAC001', role:'Faculty', dept:'Computer Engg', status:'Active' },
+    { name:'Rahul Deshmukh', prn:'PCCOER2018045', role:'Alumni', dept:'Mechanical', status:'Verified' },
+    { name:'Sneha Patil', prn:'PCCOER2022018', role:'Student', dept:'ENTC', status:'Active' },
+    { name:'Amit Sharma', prn:'FAC012', role:'Faculty', dept:'Civil', status:'Active' },
+  ];
+  return `
+  <div class="page-header">
+    <div class="d-flex justify-content-between align-items-start">
+      <div><h1>Manage Users</h1><p>View, add, deactivate user accounts.</p></div>
+      <button class="btn-accent" onclick="showToast('Add user form','info')"><i class="fas fa-user-plus me-2"></i>Add User</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="table-responsive">
+      <table class="table table-custom mb-0">
+        <thead><tr><th>Name</th><th>PRN/ID</th><th>Role</th><th>Department</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          ${USERS.map(u=>`<tr>
+            <td><strong>${u.name}</strong></td>
+            <td style="font-family:monospace;font-size:0.8rem">${u.prn}</td>
+            <td><span class="badge-status badge-${u.role==='Student'?'open':u.role==='Faculty'?'progress':'pending'}">${u.role}</span></td>
+            <td>${u.dept}</td>
+            <td><span class="badge-status badge-${u.status==='Active'?'resolved':'progress'}">${u.status}</span></td>
+            <td>
+              <button class="tbl-action tbl-view" onclick="showToast('Viewing ${u.name}','info')">View</button>
+              <button class="tbl-action tbl-delete ms-1" onclick="showToast('${u.name} deactivated','warning')">Deactivate</button>
+            </td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+// ══════════════════ CHARTS ══════════════════
+function initCharts() {
+  const c1 = document.getElementById('chart1');
+  const c2 = document.getElementById('chart2');
+  if (!c1) return;
+
+  const p = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } };
+
+  if (currentRole === 'admin') {
+    new Chart(c1, { type: 'bar', data: {
+      labels: ['Jan','Feb','Mar','Apr','May'],
+      datasets: [
+        { label:'Received', data:[18,24,15,28,12], backgroundColor:'#3b82f6', borderRadius:6 },
+        { label:'Resolved', data:[12,20,14,22,8], backgroundColor:'#10b981', borderRadius:6 },
+      ]
+    }, options: { ...p, plugins: { legend: { display: true } } } });
+    if (c2) new Chart(c2, { type: 'doughnut', data: {
+      labels: ['Students','Faculty','Alumni','Admin'],
+      datasets: [{ data:[980,120,110,38], backgroundColor:['#3b82f6','#10b981','#f59e0b','#8b5cf6'], borderWidth:0 }]
+    }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true, position: 'bottom' } } } });
+  } else if (currentRole === 'alumni') {
+    new Chart(c1, { type: 'line', data: {
+      labels: ['Jan','Feb','Mar','Apr','May'],
+      datasets: [{ label:'Sessions', data:[1,2,1,3,2], borderColor:'#7c3aed', tension:0.4, fill:true, backgroundColor:'rgba(124,58,237,0.1)' }]
+    }, options: p });
+  } else {
+    new Chart(c1, { type: 'bar', data: {
+      labels: ['Jan','Feb','Mar','Apr','May'],
+      datasets: [{ label:'Complaints', data:[2,1,3,2,1], backgroundColor:'#3b82f6', borderRadius:6 }]
+    }, options: p });
+    if (c2) new Chart(c2, { type: 'doughnut', data: {
+      labels: ['Open','Progress','Resolved','Closed'],
+      datasets: [{ data:[2,1,1,1], backgroundColor:['#f59e0b','#3b82f6','#10b981','#94a3b8'], borderWidth:0 }]
+    }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true, position: 'bottom' } } } });
+  }
+}
+
+// ══════════════════ UTILS ══════════════════
+function showToast(msg, type='info') {
+  const colors = { success:'#10b981', info:'#3b82f6', warning:'#f59e0b', error:'#ef4444' };
+  const icons = { success:'fa-check-circle', info:'fa-info-circle', warning:'fa-exclamation-circle', error:'fa-times-circle' };
+  const tc = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = 'toast-item';
+  t.innerHTML = `<i class="fas ${icons[type]}" style="color:${colors[type]}"></i>${msg}`;
+  tc.appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+</script>
+</body>
+</html>

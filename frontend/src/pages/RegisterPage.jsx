@@ -39,10 +39,10 @@ const RegisterPage = () => {
       const res = await register(name, email, password);
 
       if (res.success) {
-        toast.success(`Welcome to UniResolve, ${res.user.name}!`);
+        toast.success(`Welcome to PCCOER Portal, ${res.user.name}!`);
         navigate('/dashboard', { replace: true });
       } else {
-        toast.error(res.message);
+        toast.dark(res.message);
       }
     } catch (err) {
       toast.error('An unexpected registration error occurred. Please try again.');
@@ -60,12 +60,19 @@ const RegisterPage = () => {
       <div className="w-full max-w-[460px] p-8 md:p-10 rounded-3xl border border-slate-200/50 dark:border-slate-800/40 bg-white/60 dark:bg-slate-900/40 backdrop-blur-xl shadow-2xl flex flex-col items-center">
         {/* Brand identity logo */}
         <Link to="/" className="flex items-center gap-2 mb-8 select-none">
-          <div className="bg-gradient-to-tr from-brand-600 to-indigo-500 p-2.5 rounded-xl text-white shadow-md">
-            <ShieldAlert className="h-6 w-6" />
+          <img
+            src="/pccoerimg.jpeg"
+            alt="PCCOER Logo"
+            className="h-10 w-10 rounded-full object-cover border border-slate-200 dark:border-slate-800"
+          />
+          <div className="flex flex-col">
+            <span className="font-extrabold text-lg text-slate-900 dark:text-white leading-tight">
+              PCCOER
+            </span>
+            <span className="text-[9px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest leading-none mt-0.5">
+              Support Portal
+            </span>
           </div>
-          <span className="font-extrabold text-2xl tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
-            UniResolve
-          </span>
         </Link>
 
         {/* Headings */}
@@ -74,7 +81,7 @@ const RegisterPage = () => {
             Create Account
           </h2>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Register to submit and track college complaints
+            Register to access complaints, events, and library services
           </p>
         </div>
 

@@ -9,12 +9,19 @@ const LandingPage = () => {
       {/* Header bar */}
       <header className="max-w-7xl mx-auto w-full px-6 py-5 flex items-center justify-between relative z-10">
         <div className="flex items-center gap-2.5">
-          <div className="bg-gradient-to-tr from-brand-600 to-indigo-500 p-2.5 rounded-xl text-white shadow-md shadow-brand-500/20">
-            <ShieldAlert className="h-5 w-5" />
+          <img
+            src="/pccoerimg.jpeg"
+            alt="PCCOER Logo"
+            className="h-10 w-10 rounded-full object-cover border border-slate-200 dark:border-slate-800"
+          />
+          <div className="flex flex-col">
+            <span className="font-extrabold text-sm tracking-tight text-slate-900 dark:text-white leading-none">
+              PCCOER
+            </span>
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest mt-0.5">
+              Support Portal
+            </span>
           </div>
-          <span className="font-extrabold text-xl tracking-tight bg-gradient-to-r from-slate-900 via-slate-800 to-slate-700 dark:from-white dark:via-slate-100 dark:to-slate-300 bg-clip-text text-transparent">
-            UniResolve
-          </span>
         </div>
         <div className="flex items-center gap-4">
           <Link
@@ -68,7 +75,7 @@ const LandingPage = () => {
               transition={{ duration: 0.4, delay: 0.2 }}
               className="text-slate-500 dark:text-slate-400 text-lg leading-relaxed max-w-xl"
             >
-              UniResolve is a state-of-the-art campus ticket system. Submit utility, facility, or Wi-Fi complaints with images, track resolution live on a modern dashboard, and let college admins resolve them efficiently.
+              PCCOER Student Support Portal is a state-of-the-art campus ticket system. Submit facility, IT, or library complaints with image evidence, track resolution live on a modern dashboard, and browse the integrated central library catalog.
             </motion.p>
 
             <motion.div
@@ -147,7 +154,7 @@ const LandingPage = () => {
       {/* Footer segment */}
       <footer className="py-6 border-t border-slate-200/40 dark:border-slate-900/60 mt-auto px-6">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 dark:text-slate-500">
-          <p>© 2026 UniResolve Inc. Built for digital campus administration.</p>
+          <p>© 2026 Pimpri Chinchwad College of Engineering & Research. Built for digital campus administration.</p>
           <div className="flex gap-4 mt-2 sm:mt-0 font-medium">
             <span className="hover:text-brand-500 cursor-pointer">Security Standards</span>
             <span className="hover:text-brand-500 cursor-pointer">Privacy Guidelines</span>

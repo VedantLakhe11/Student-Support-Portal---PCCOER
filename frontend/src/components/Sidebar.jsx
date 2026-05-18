@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { LayoutDashboard, User, LogOut, ChevronRight, ShieldAlert, Sparkles } from 'lucide-react';
+import { LayoutDashboard, User, LogOut, ChevronRight, ShieldAlert, Sparkles, BookOpen } from 'lucide-react';
 
 const Sidebar = ({ isOpen, onClose }) => {
   const { user, logout } = useAuth();
@@ -11,6 +11,11 @@ const Sidebar = ({ isOpen, onClose }) => {
       name: 'Dashboard',
       path: '/',
       icon: LayoutDashboard,
+    },
+    {
+      name: 'Library Section',
+      path: '/library',
+      icon: BookOpen,
     },
     {
       name: 'My Profile',
@@ -44,12 +49,19 @@ const Sidebar = ({ isOpen, onClose }) => {
         <div>
           {/* Logo segment on drawer */}
           <div className="flex items-center gap-2.5 px-3 mb-8">
-            <div className="bg-gradient-to-tr from-brand-600 to-indigo-500 p-2.5 rounded-xl text-white shadow-md shadow-brand-500/25">
-              <ShieldAlert className="h-5 w-5" />
+            <img
+              src="/pccoerimg.jpeg"
+              alt="PCCOER Logo"
+              className="h-10 w-10 rounded-full object-cover border border-slate-200 dark:border-slate-800"
+            />
+            <div className="flex flex-col">
+              <span className="font-extrabold text-sm text-slate-900 dark:text-white leading-tight">
+                PCCOER
+              </span>
+              <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+                Student Support Portal
+              </span>
             </div>
-            <span className="font-extrabold text-xl bg-gradient-to-r from-slate-900 via-slate-800 to-slate-700 dark:from-white dark:via-slate-100 dark:to-slate-300 bg-clip-text text-transparent">
-              UniResolve
-            </span>
           </div>
 
           {/* Navigation Links grid */}
@@ -88,7 +100,7 @@ const Sidebar = ({ isOpen, onClose }) => {
             </div>
             <h4 className="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400 mb-1 flex items-center gap-1.5">
               <Sparkles className="h-3 w-3 stroke-[2.5]" />
-              UniResolve Pro
+              PCCOER Support
             </h4>
             <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
               Managing campus complaints has never been more organized, direct and fast.

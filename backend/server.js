@@ -1,5 +1,5 @@
 const path = require('path');
-// Load environment variables before any other imports
+// Load environment variables before any other imports (auto-reload trigger)
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 const app = require('./app');

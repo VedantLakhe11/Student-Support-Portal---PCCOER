@@ -10,6 +10,7 @@ import StudentDashboard from '../pages/StudentDashboard';
 import AdminDashboard from '../pages/AdminDashboard';
 import ComplaintDetailsPage from '../pages/ComplaintDetailsPage';
 import ProfilePage from '../pages/ProfilePage';
+import LibraryPage from '../pages/LibraryPage';
 import NotFoundPage from '../pages/NotFoundPage';
 
 // Layout & Protection
@@ -84,6 +85,17 @@ const AppRoutes = () => {
           <ProtectedRoute>
             <DashboardLayout>
               <ProfilePage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/library"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <LibraryPage />
             </DashboardLayout>
           </ProtectedRoute>
         }

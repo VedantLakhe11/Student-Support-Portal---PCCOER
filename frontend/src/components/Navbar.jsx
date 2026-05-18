@@ -32,11 +32,13 @@ const Navbar = ({ onMenuToggle }) => {
           <Menu className="h-5 w-5" />
         </button>
         <div className="flex items-center gap-2">
-          <div className="bg-gradient-to-tr from-brand-600 to-indigo-500 p-2 rounded-xl text-white shadow-md shadow-brand-500/20">
-            <ShieldAlert className="h-5 w-5" />
-          </div>
+          <img
+            src="/pccoerimg.jpeg"
+            alt="PCCOER Logo"
+            className="h-9 w-9 rounded-full object-cover border border-slate-200 dark:border-slate-800"
+          />
           <span className="font-bold text-xl bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent hidden sm:inline-block">
-            UniResolve
+            PCCOER Portal
           </span>
         </div>
       </div>
