@@ -1,54 +1,68 @@
-# UniResolve — Smart Complaint Management System for College Campus
+# 🏫 PCCOER CampusCare — Smart Campus Support & Alumni Mentorship Portal
 
-**UniResolve** is a highly optimized, production-ready, full-stack campus ticket administration system. Built on a modern SaaS architecture, it empowers college students to register facility, internet, classroom, or utility complaints with optional image uploads, track ticket progress in real-time, and enables administrators to monitor trends, update statuses with progress commentary, and filters spam complaints efficiently.
+[![MERN Stack](https://img.shields.io/badge/Stack-MERN-orange.svg?style=for-the-badge)](https://mongodb.com)
+[![React](https://img.shields.io/badge/Frontend-React.js-blue.svg?style=for-the-badge)](https://react.dev)
+[![Vite](https://img.shields.io/badge/Compiler-Vite-purple.svg?style=for-the-badge)](https://vite.dev)
+[![Tailwind CSS](https://img.shields.io/badge/Styling-Tailwind_CSS-38bdf8.svg?style=for-the-badge)](https://tailwindcss.com)
+[![License](https://img.shields.io/badge/Production-Ready-emerald.svg?style=for-the-badge)](#)
 
----
+**PCCOER CampusCare** is an enterprise-grade, decentralized MERN Stack SaaS-style campus support and collaborative portal built specifically for **Pimpri Chinchwad College of Engineering & Research (PCCOER)**. 
 
-## 🌟 Visual Core Features
-
-- 🌓 **Dynamic Theme Integration:** Auto-adaptive Light and Dark modes with HSL theme mappings.
-- 📊 **Administrative Insights:** Live trends tracking, daily area curves, and category pie charts powered by Recharts.
-- 🔒 **Secure Authorization Gateway:** Cryptographically signed session tokens (JWT) and Bcrypt salted passwords.
-- 📑 **Advanced Datatables:** Full pagination, real-time query searching, multi-filter categorizations, and sorting.
-- ⏳ **Chronological Status Audits:** Detail timelines documenting changes, who committed the action, and administrative comments.
-- ⚡ **Spectacular Micro-Animations:** Fluid, responsive state animations utilizing Framer Motion and pulsating loading skeletons.
+The system centralizes Student Grievances, Suggestion Moderation, Hackathons registrations, Real-time Library shelf reserves, Sports facility booking, Alumni direct career mentorship, and Campus Forums under a beautiful, dark-mode-first visual interface.
 
 ---
 
-## 📂 System Folder Architecture
+## 🌟 Visual Master Key Features
+
+### 🌓 1. HSL Dynamic Theme Mappings
+* Fully responsive interface built on a robust dark-mode-first visual engine.
+* Beautiful transitions and interactions styled with **Tailwind CSS** and **Framer Motion** micro-animations.
+
+### 📊 2. Operations Control Center (Analytics)
+* Fully integrated interactive analytics dashboard using **Recharts**.
+* Renders real-time aggregate complaint trend area charts (last 7 days) and responsive category distribution pie charts.
+
+### 💼 3. Decentralized Unified Role Matrix
+* Core routing logic serving 4 roles custom dashboards: **Student, Faculty, Alumni, and Administrator**.
+* Secured password recovery pipelines using visual copiable recovery cards.
+
+### 🛠️ 4. Collaborative Timeline Logs & Chats
+* Grievance tickets support interactive chronological resolution timeline logs (Pending ➡️ In Progress ➡️ Resolved ➡️ Closed).
+* In-line discussion chat box transmitting real-time comments on tickets between students and mediators.
+
+---
+
+## 📂 System Directory Tree Map
 
 ```
-uni-resolve/
+PCCOER-CampusCare/
 ├── backend/
-│   ├── config/              # Mongoose DB connector config
-│   ├── controllers/         # API business logics (auth, complaints, stats)
-│   ├── middleware/          # JWT protection, uploads, and error parsers
-│   ├── models/              # Mongoose MongoDB Schemas
-│   ├── routes/              # Express endpoint routers
+│   ├── config/              # MongoDB Atlas cluster config & connection
+│   ├── controllers/         # Business Operations (auth, complaints, university, forum, notification, admin)
+│   ├── middleware/          # JWT auth gates, Multer storage, Rate-limiter filters
+│   ├── models/              # Mongoose Database Schemas (User, Complaint, Suggestion, Event, Mentor, ForumPost, Book, Facility, Notification)
+│   ├── routes/              # Express API Endpoint Maps
 │   ├── uploads/             # local image store (gitkeep protected)
-│   ├── utils/               # Token generators & DB Seeders
+│   ├── utils/               # Bcrypt helpers, JWTS, and utils/seeder.js
 │   ├── .env.example         # Template config variables
-│   ├── package.json         # Node scripts & tools
-│   └── server.js            # Express server main entrance
+│   ├── package.json         # Node scripts & dependencies
+│   └── server.js            # Express Entry gateway
 ├── frontend/
-│   ├── public/              # Icons and SVGs assets
+│   ├── public/              # Logos and SVGs
 │   ├── src/
-│   │   ├── assets/          # Static layout images
-│   │   ├── components/      # Reusable overlays, Skeletons, Modals
-│   │   ├── context/         # Auth & Theme Global Providers
+│   │   ├── components/      # UI Modals, Skeletons, charts, layouts
+│   │   ├── context/         # Auth & Theme Provider context states
 │   │   ├── hooks/           # useAuth and useTheme custom hooks
-│   │   ├── layouts/         # Dashboard Shell Layouts
-│   │   ├── pages/           # Landing, Login, Register, Dashboards
-│   │   ├── routes/          # ProtectedRoute gates & Route mappings
-│   │   ├── services/        # Axios configurations & Interceptors
+│   │   ├── layouts/         # Dashboard Shell Layout wrapper
+│   │   ├── pages/           # Landing, Login, Register, Recovery, 4 specialized Dashboards
+│   │   ├── routes/          # ProtectedRoute gates & AppRoutes mapping
+│   │   ├── services/        # Axios API Client Interceptors
 │   │   ├── index.css        # Tailwind v4 import & custom styles
 │   │   └── App.jsx          # Entry layout controller
-│   ├── postcss.config.js    # Compile styling config
-│   ├── tailwind.config.js   # Class-driven tailwind properties
 │   ├── vite.config.js       # Vite client compiler configuration
 │   └── package.json         # React packages & scripts
-├── .gitignore               # System-wide exclude patterns
-└── README.md                # Premium configuration manual
+├── README.md                # Premium configuration manual
+└── .gitignore               # System-wide exclude patterns
 ```
 
 ---
@@ -57,32 +71,32 @@ uni-resolve/
 
 Create `.env` files in both the `backend/` and `frontend/` folders using the templates below:
 
-### 1. Backend Config (`backend/.env`)
+### 1. Backend Configuration (`backend/.env`)
 
 ```ini
-PORT=5000
-MONGO_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/uni_resolve?retryWrites=true&w=majority
-JWT_SECRET=your_cryptographically_signed_super_secret_jwt_key_here
+PORT=5001
+MONGO_URI=mongodb+srv://vedant_project:Vedant%401234@project.695yx2z.mongodb.net/college_complaints
+JWT_SECRET=8f9a2e6f423984d9f0f9c2d1b827e69f4c3a5d8e7b9c6d3f2e1a8b9c6d3e8f7a
 NODE_ENV=development
 FRONTEND_URL=http://localhost:5173
 ```
+> [!IMPORTANT]
+> Since macOS occupies port `5000` via AirPlay by default, the backend is configured to listen securely on port **`5001`**.
 
-### 2. Frontend Config (`frontend/.env`)
+### 2. Frontend Configuration (`frontend/.env`)
 
 ```ini
-VITE_API_URL=http://localhost:5000/api
+VITE_API_URL=http://localhost:5001/api
 ```
 
 ---
 
 ## 🚀 Quick Setup & Local Launch
 
-Follow these steps to spin up the application on your local machine:
-
 ### Prerequisites
-- Node.js (v18.0.0 or higher)
-- npm or yarn
-- Active local MongoDB instance or MongoDB Atlas cluster
+* **Node.js** (v18.0.0 or higher)
+* **npm** or **yarn**
+* **MongoDB Atlas** Cloud Database (URL pre-configured in `.env`)
 
 ### Step 1: Install Dependencies
 Install packages for both frontend and backend directories:
@@ -97,7 +111,7 @@ npm install
 ```
 
 ### Step 2: Seed Mock Database Records
-To log in immediately and test stats charts, seed standard students and admin credentials:
+To log in immediately and test stats charts, run our preconfigured Mongoose seeder script to populate default university records, library catalogues, facilities schedules, and role accounts:
 ```bash
 # From the backend/ folder
 npm run seed
@@ -105,67 +119,76 @@ npm run seed
 
 This populates the database with the following default credentials:
 
-| Account Type | Email Address | Password |
-| :--- | :--- | :--- |
-| **Administrator** | `admin@college.edu` | `adminpassword123` |
-| **Student** | `vedant@student.edu` | `studentpassword123` |
-| **Student** | `aditya@student.edu` | `studentpassword123` |
+| Dashboard Role | Email Address | Password | Account Key / Extra Parameters |
+| :--- | :--- | :--- | :--- |
+| **Administrator** | `admin@college.edu` | `adminpassword123` | Direct analytics, suspension bans, role upgrades |
+| **Faculty Resolver** | `professor@faculty.edu` | `facultypassword123` | Department assigned: "Computer Science" |
+| **Verified Alumni** | `alumni@alumni.edu` | `alumnipassword123` | Mentor profile configured |
+| **Student** | `vedant@student.edu` | `studentpassword123` | PRN: `72011234F` • year: `TE Computer` |
 
 ### Step 3: Run Dev Servers
 Launch both dev environments to begin using the system:
 ```bash
-# In the backend/ folder
+# Terminal 1: In the backend/ folder
 npm run dev
 
-# In a separate terminal, from the frontend/ folder
+# Terminal 2: In the frontend/ folder
 npm run dev
 ```
 Open **`http://localhost:5173`** in your browser to explore the landing page!
 
 ---
 
-## ☁️ Deployment Blueprints
+## 📋 Comprehensive API Route Reference
 
-### A. Database (MongoDB Atlas)
-1. Sign up on [MongoDB Atlas](https://www.mongodb.com/cloud/atlas).
-2. Create a free M0 Cluster and configure Network Access to accept connections from anywhere (`0.0.0.0/0`).
-3. Under Database Access, create a user and copy the connection URI string.
-4. Replace `MONGO_URI` in `backend/.env` with this string.
+### 🔐 1. Authentication Router (`/api/auth`)
+* `POST /register` — Register new user account with conditional role sub-fields.
+* `POST /login` — Standard credentials check (returns JWT Cookie / payload).
+* `PUT /profile` — Update user name, PRN, branch, year or security passwords.
+* `POST /forgot-password` — Generates a copyable visual code card for password recovery.
+* `POST /reset-password` — Resets account password using recovery code.
 
-### B. Backend (Render)
-1. Sign up on [Render](https://render.com).
-2. Create a new **Web Service** and link your Git repository.
-3. Configure the following attributes:
-   - **Environment:** `Node`
-   - **Build Command:** `npm install`
-   - **Start Command:** `npm start`
-4. Add all Backend environment variables from `backend/.env` in the "Environment Variables" section.
-5. In **Advanced Settings**, ensure the server does not sleep by setting up a health check endpoint, or mapping disk mounts for the `uploads/` directory if persistent storage is desired.
+### 🏛️ 2. University Router (`/api/university`)
+* `GET /suggestions` — Lists student campus proposals.
+* `POST /suggestions` — Student logs a suggestion (optional anonymity).
+* `POST /suggestions/:id/vote` — Toggles an upvote support count on proposal.
+* `GET /events` — Lists technical hackathons, coding contests, and countdowns.
+* `POST /events` — Faculty publishes an event with max slot limits.
+* `POST /events/:id/register` — Student registers for an event (updates slot countdowns).
+* `GET /mentors` — Lists corporate alumni mentors.
+* `POST /mentors/:id/request` — Student sends career mentoring invitation.
+* `POST /mentors/:mentorId/approve` — Alumni approves invitation request.
+* `POST /mentors/:mentorId/blog` — Alumni publishes internship/recruiting blogs.
+* `GET /books` — Catalog of books including shelf coordinates.
+* `POST /books/:id/reserve` — Student reserves or returns textbook.
+* `GET /facilities` — Status tracker (GYM, Seminar Hall, Sports Court).
+* `POST /facilities/:id/book` — Student reserves facility slot.
 
-### C. Frontend (Vercel)
-1. Sign up on [Vercel](https://vercel.com).
-2. Create a new Project and link the `frontend` folder of your Git repository.
-3. Set the build parameters:
-   - **Framework Preset:** `Vite`
-   - **Build Command:** `npm run build`
-   - **Output Directory:** `dist`
-4. Add the frontend environment variable:
-   - `VITE_API_URL`: Set this to your deployed Render URL (e.g. `https://your-service.onrender.com/api`).
-5. Click **Deploy**. Vercel will build and serve your premium interface on a secure SSL URL.
+### 💬 3. Forums Router (`/api/forum`)
+* `GET /` — Fetch all tagged discussion posts.
+* `POST /` — Broadcast thread (by Student, Alumni, or Faculty).
+* `POST /:id/like` — Liking a thread.
+* `POST /:id/comment` — Appends comment reply to post thread.
+
+### 🛡️ 4. Administration Router (`/api/admin`)
+* `GET /stats` — Dynamic charts aggregator counts.
+* `GET /users` — Retrieves user directory roster.
+* `PUT /users/:id/ban` — Suspends/ban user account (re-activates if already suspended).
+* `PUT /users/:id/role` — Switches authority roles (student ➡️ faculty, etc).
+* `PUT /suggestions/:id` — Status moderator (`Approved`, `Implemented`, `Spam`).
 
 ---
 
-## 🛡️ Standard Security Features
+## 🛡️ Production-Grade Security Defenses
 
-- **Morgan Logs:** Monitors and prints all incoming HTTP requests to the console.
-- **Helmet Security:** Injects HTTP response headers to defend against cross-site scripting and resource loaders blocks.
-- **Express Rate Limiter:** Protects endpoints from DDoS and dictionary brute-force attacks by limiting requests to 100 per 15 minutes per IP.
-- **Password Hashing:** Salted passwords using Bcrypt (10 rounds strength) preventing leaks even in standard database dump files.
+* **Morgan HTTP logs:** Logs and traces all network transactions directly to the terminal.
+* **Helmet Shield:** Sets HTTP headers to restrict script injections and clickjacking.
+* **Express Rate Limiter:** Bounds requests to 100 per 15 minutes per IP to block brute-force and DDoS attacks.
+* **Mongoose Validations:** Enforces strict patterns, required conditions, and uniqueness.
+* **Cryptographic Bcrypt Hashing:** Salted passwords (10 rounds strength) ensuring no plain credentials leak.
 
 ---
 
-## 📄 License & Standards
+## 📄 License & Pair-Programming Standards
 
-This project has been developed under premium pair-programming engineering standards. All database models, custom components, filters, and animations comply with production-ready guidelines. Enjoy managing your campus resolutions elegantly!
-# Student-Support-Portal---PCCOER
-# Student-Support-Portal---PCCOER
+Developed under premium pair-programming engineering standards. All database schemas, routes, custom hooks, and charting structures conform to production-grade guidelines. Enjoy managing your campus resolutions elegantly!
