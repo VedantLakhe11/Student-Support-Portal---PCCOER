@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const statusHistorySchema = new mongoose.Schema({
   status: {
     type: String,
-    enum: ['Pending', 'In Progress', 'Resolved'],
+    enum: ['Pending', 'In Progress', 'Resolved', 'Closed'],
     required: true,
   },
   updatedBy: {
@@ -45,13 +45,15 @@ const complaintSchema = new mongoose.Schema(
       required: [true, 'Please select a category'],
       enum: {
         values: [
+          'WiFi',
           'Electricity',
           'Water Leakage',
-          'Wi-Fi',
           'Cleanliness',
           'Hostel',
+          'Ragging',
           'Lab Equipment',
-          'Classroom Issue',
+          'Classroom',
+          'Canteen',
           'Other',
         ],
         message: 'Invalid complaint category selected',
@@ -63,9 +65,38 @@ const complaintSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['Pending', 'In Progress', 'Resolved'],
+      enum: ['Pending', 'In Progress', 'Resolved', 'Closed'],
       default: 'Pending',
     },
+    assignedDept: {
+      type: String,
+      default: 'General Administration',
+    },
+    isAnonymous: {
+      type: Boolean,
+      default: false,
+    },
+    comments: [
+      {
+        author: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User',
+          required: true,
+        },
+        authorName: {
+          type: String,
+          required: true,
+        },
+        text: {
+          type: String,
+          required: true,
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
     statusHistory: [statusHistorySchema],
   },
   {

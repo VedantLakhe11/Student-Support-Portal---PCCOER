@@ -6,6 +6,7 @@ const {
   getComplaintById,
   updateComplaint,
   deleteComplaint,
+  addComplaintComment,
 } = require('../controllers/complaintController');
 const { protect } = require('../middleware/authMiddleware');
 const upload = require('../middleware/uploadMiddleware');
@@ -21,5 +22,7 @@ router.route('/:id')
   .get(getComplaintById)
   .put(upload.single('image'), updateComplaint)
   .delete(deleteComplaint);
+
+router.post('/:id/comment', addComplaintComment);
 
 module.exports = router;

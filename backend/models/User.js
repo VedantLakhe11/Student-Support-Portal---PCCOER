@@ -28,12 +28,36 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['student', 'admin'],
+      enum: ['student', 'faculty', 'alumni', 'admin'],
       default: 'student',
+    },
+    prn: {
+      type: String,
+      default: '',
+    },
+    dept: {
+      type: String,
+      default: 'Computer Engineering',
+    },
+    year: {
+      type: String,
+      default: 'FE',
     },
     avatar: {
       type: String,
-      default: '', // Will generate dynamically on frontend using initials if empty
+      default: '',
+    },
+    isBanned: {
+      type: Boolean,
+      default: false,
+    },
+    forgotPasswordToken: {
+      type: String,
+      default: null,
+    },
+    forgotPasswordExpire: {
+      type: Date,
+      default: null,
     },
   },
   {

@@ -6,7 +6,11 @@ import { useAuth } from '../hooks/useAuth';
 import LandingPage from '../pages/LandingPage';
 import LoginPage from '../pages/LoginPage';
 import RegisterPage from '../pages/RegisterPage';
+import ForgotPasswordPage from '../pages/ForgotPasswordPage';
+import ResetPasswordPage from '../pages/ResetPasswordPage';
 import StudentDashboard from '../pages/StudentDashboard';
+import FacultyDashboard from '../pages/FacultyDashboard';
+import AlumniDashboard from '../pages/AlumniDashboard';
 import AdminDashboard from '../pages/AdminDashboard';
 import ComplaintDetailsPage from '../pages/ComplaintDetailsPage';
 import ProfilePage from '../pages/ProfilePage';
@@ -26,6 +30,20 @@ const AppRoutes = () => {
       return (
         <DashboardLayout>
           <AdminDashboard />
+        </DashboardLayout>
+      );
+    }
+    if (user?.role === 'faculty') {
+      return (
+        <DashboardLayout>
+          <FacultyDashboard />
+        </DashboardLayout>
+      );
+    }
+    if (user?.role === 'alumni') {
+      return (
+        <DashboardLayout>
+          <AlumniDashboard />
         </DashboardLayout>
       );
     }
@@ -55,6 +73,18 @@ const AppRoutes = () => {
         path="/register"
         element={
           isAuthenticated ? <Navigate to="/dashboard" replace /> : <RegisterPage />
+        }
+      />
+      <Route
+        path="/forgot-password"
+        element={
+          isAuthenticated ? <Navigate to="/dashboard" replace /> : <ForgotPasswordPage />
+        }
+      />
+      <Route
+        path="/reset-password"
+        element={
+          isAuthenticated ? <Navigate to="/dashboard" replace /> : <ResetPasswordPage />
         }
       />
 

@@ -41,11 +41,11 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Register handler
-  const register = async (name, email, password) => {
+  // Register handler with extended profile fields
+  const register = async (fields) => {
     try {
       setLoading(true);
-      const response = await api.post('/auth/register', { name, email, password });
+      const response = await api.post('/auth/register', fields);
       const userData = response.data.data;
 
       setUser(userData);
@@ -55,6 +55,60 @@ export const AuthProvider = ({ children }) => {
       return {
         success: false,
         message: error.cleanMessage || 'Registration failed. Please try again.',
+      };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Forgot Password
+  const requestForgotPassword = async (email) => {
+    try {
+      setLoading(true);
+      const response = await api.post('/auth/forgot-password', { email });
+      return { success: true, message: response.data.message, code: response.data.resetCode };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.cleanMessage || 'Failed to submit reset request.',
+      };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Reset Password
+  const requestResetPassword = async (email, code, newPassword) => {
+    try {
+      setLoading(true);
+      const response = await api.post('/auth/reset-password', { email, code, newPassword });
+      return { success: true, message: response.data.message };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.cleanMessage || 'Failed to reset password.',
+      };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Update Profile
+  const updateProfile = async (fields) => {
+    try {
+      setLoading(true);
+      const response = await api.put('/auth/profile', fields);
+      const userData = response.data.data;
+
+      // Update cached and state credentials
+      const mergedUser = { ...user, ...userData };
+      setUser(mergedUser);
+      localStorage.setItem('user', JSON.stringify(mergedUser));
+      return { success: true, user: mergedUser };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.cleanMessage || 'Failed to update profile details.',
       };
     } finally {
       setLoading(false);
@@ -75,7 +129,13 @@ export const AuthProvider = ({ children }) => {
         login,
         register,
         logout,
+        requestForgotPassword,
+        requestResetPassword,
+        updateProfile,
         isAuthenticated: !!user,
+        isStudent: user && user.role === 'student',
+        isFaculty: user && user.role === 'faculty',
+        isAlumni: user && user.role === 'alumni',
         isAdmin: user && user.role === 'admin',
       }}
     >

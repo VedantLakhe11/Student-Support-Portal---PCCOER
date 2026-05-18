@@ -8,7 +8,7 @@ const path = require('path');
 // @access  Private (Student only)
 const createComplaint = async (req, res, next) => {
   try {
-    const { title, description, category } = req.body;
+    const { title, description, category, isAnonymous, assignedDept } = req.body;
 
     if (!title || !description || !category) {
       res.status(400);
@@ -35,6 +35,8 @@ const createComplaint = async (req, res, next) => {
       category,
       image: imagePath,
       status: 'Pending',
+      isAnonymous: !!isAnonymous,
+      assignedDept: assignedDept || 'General Administration',
       statusHistory: [
         {
           status: 'Pending',
@@ -166,37 +168,38 @@ const updateComplaint = async (req, res, next) => {
       throw new Error('Complaint not found');
     }
 
-    // 1. ADMIN action: Update complaint status
-    if (req.user.role === 'admin') {
-      const { status, comment } = req.body;
+    // 1. ADMIN or FACULTY action: Update status/department
+    if (req.user.role === 'admin' || req.user.role === 'faculty') {
+      const { status, comment, assignedDept } = req.body;
 
-      if (!status) {
-        res.status(400);
-        throw new Error('Please specify new status');
+      if (status) {
+        if (!['Pending', 'In Progress', 'Resolved', 'Closed'].includes(status)) {
+          res.status(400);
+          throw new Error('Invalid status option');
+        }
+        complaint.status = status;
+        complaint.statusHistory.push({
+          status,
+          updatedBy: req.user._id,
+          comment: comment || `Status updated to ${status} by ${req.user.role}.`,
+        });
       }
 
-      if (!['Pending', 'In Progress', 'Resolved'].includes(status)) {
-        res.status(400);
-        throw new Error('Invalid status option');
+      if (assignedDept) {
+        complaint.assignedDept = assignedDept;
       }
-
-      complaint.status = status;
-      complaint.statusHistory.push({
-        status,
-        updatedBy: req.user._id,
-        comment: comment || `Status updated to ${status} by admin.`,
-      });
 
       await complaint.save();
 
       // Fetch freshly populated complaint to return
       const updated = await Complaint.findById(req.params.id)
         .populate('studentId', 'name email role')
-        .populate('statusHistory.updatedBy', 'name role');
+        .populate('statusHistory.updatedBy', 'name role')
+        .populate('comments.author', 'name role avatar');
 
       return res.json({
         success: true,
-        message: `Complaint status successfully updated to ${status}`,
+        message: `Complaint successfully updated by ${req.user.role}`,
         data: updated,
       });
     }
@@ -213,11 +216,12 @@ const updateComplaint = async (req, res, next) => {
         throw new Error('Forbidden: You can only edit complaints that are still Pending.');
       }
 
-      const { title, description, category } = req.body;
+      const { title, description, category, isAnonymous } = req.body;
 
       if (title) complaint.title = title;
       if (description) complaint.description = description;
       if (category) complaint.category = category;
+      if (typeof isAnonymous !== 'undefined') complaint.isAnonymous = !!isAnonymous;
 
       // Handle image updates
       if (req.file) {
@@ -239,7 +243,8 @@ const updateComplaint = async (req, res, next) => {
 
       const updated = await Complaint.findById(req.params.id)
         .populate('studentId', 'name email role')
-        .populate('statusHistory.updatedBy', 'name role');
+        .populate('statusHistory.updatedBy', 'name role')
+        .populate('comments.author', 'name role avatar');
 
       return res.json({
         success: true,
@@ -247,6 +252,52 @@ const updateComplaint = async (req, res, next) => {
         data: updated,
       });
     }
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Add comment to a complaint
+// @route   POST /api/complaints/:id/comment
+// @access  Private
+const addComplaintComment = async (req, res, next) => {
+  try {
+    const { text } = req.body;
+    if (!text) {
+      res.status(400);
+      throw new Error('Comment text is required');
+    }
+
+    const complaint = await Complaint.findById(req.params.id);
+    if (!complaint) {
+      res.status(404);
+      throw new Error('Complaint not found');
+    }
+
+    // Role safety: Students can only comment on their own complaints
+    if (req.user.role === 'student' && complaint.studentId.toString() !== req.user._id.toString()) {
+      res.status(403);
+      throw new Error('Unauthorized to comment on this ticket.');
+    }
+
+    complaint.comments.push({
+      author: req.user._id,
+      authorName: req.user.name,
+      text,
+    });
+
+    await complaint.save();
+
+    const updated = await Complaint.findById(req.params.id)
+      .populate('studentId', 'name email role')
+      .populate('statusHistory.updatedBy', 'name role')
+      .populate('comments.author', 'name role avatar');
+
+    res.status(201).json({
+      success: true,
+      message: 'Comment added successfully',
+      data: updated,
+    });
   } catch (error) {
     next(error);
   }
@@ -307,4 +358,5 @@ module.exports = {
   getComplaintById,
   updateComplaint,
   deleteComplaint,
+  addComplaintComment,
 };

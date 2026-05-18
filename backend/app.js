@@ -68,6 +68,9 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/complaints', require('./routes/complaintRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
+app.use('/api/university', require('./routes/universityRoutes'));
+app.use('/api/forum', require('./routes/forumRoutes'));
+app.use('/api/notifications', require('./routes/notificationRoutes'));
 
 // Root endpoint for simple health-checks
 app.get('/', (req, res) => {
