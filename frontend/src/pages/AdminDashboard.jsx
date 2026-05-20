@@ -312,7 +312,7 @@ const AdminDashboard = () => {
                       Daily Complaint filing Trends (Last 7 Days)
                     </h3>
                     <div className="h-72 w-full">
-                      <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+                      <ResponsiveContainer width="100%" height={288}>
                         <AreaChart data={timelineData}>
                           <defs>
                             <linearGradient id="adminTrendsGrad" x1="0" y1="0" x2="0" y2="1">
@@ -338,7 +338,7 @@ const AdminDashboard = () => {
                     ) : (
                       <>
                         <div className="h-52 w-full flex items-center justify-center">
-                          <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+                          <ResponsiveContainer width="100%" height={208}>
                             <PieChart>
                               <Pie data={categoryData} cx="50%" cy="50%" innerRadius={55} outerRadius={75} paddingAngle={4} dataKey="value">
                                 {categoryData.map((e, index) => <Cell key={index} fill={COLORS[index % COLORS.length]} />)}

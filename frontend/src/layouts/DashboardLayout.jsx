@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import AIAssistantPopup from '../components/AIAssistantPopup';
 import { motion } from 'framer-motion';
 
 const DashboardLayout = ({ children }) => {
@@ -26,6 +27,9 @@ const DashboardLayout = ({ children }) => {
           >
             {children}
           </motion.div>
+
+          {/* Floating AI Assistant Chatbot */}
+          <AIAssistantPopup />
         </main>
       </div>
     </div>

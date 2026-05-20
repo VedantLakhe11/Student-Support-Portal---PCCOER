@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { LayoutDashboard, User, LogOut, ChevronRight, ShieldAlert, Sparkles, BookOpen } from 'lucide-react';
+import { LayoutDashboard, User, LogOut, ChevronRight, ShieldAlert, Sparkles, BookOpen, MessageSquare, Rss, Briefcase, ShoppingBag, Trophy } from 'lucide-react';
 
 const Sidebar = ({ isOpen, onClose }) => {
   const { user, logout } = useAuth();
@@ -16,6 +16,31 @@ const Sidebar = ({ isOpen, onClose }) => {
       name: 'Library Section',
       path: '/library',
       icon: BookOpen,
+    },
+    {
+      name: 'Campus Chat',
+      path: '/chat',
+      icon: MessageSquare,
+    },
+    {
+      name: 'Social Insights Feed',
+      path: '/social',
+      icon: Rss,
+    },
+    {
+      name: 'Startup Collab Hub',
+      path: '/projects',
+      icon: Briefcase,
+    },
+    {
+      name: 'Marketplace Swap',
+      path: '/marketplace',
+      icon: ShoppingBag,
+    },
+    {
+      name: 'Influence Leaderboard',
+      path: '/leaderboard',
+      icon: Trophy,
     },
     {
       name: 'My Profile',

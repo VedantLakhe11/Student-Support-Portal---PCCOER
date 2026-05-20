@@ -17,6 +17,13 @@ import ProfilePage from '../pages/ProfilePage';
 import LibraryPage from '../pages/LibraryPage';
 import NotFoundPage from '../pages/NotFoundPage';
 
+// Upgraded Premium Pages
+import ChatPage from '../pages/ChatPage';
+import SocialFeedPage from '../pages/SocialFeedPage';
+import ProjectsHubPage from '../pages/ProjectsHubPage';
+import MarketplacePage from '../pages/MarketplacePage';
+import LeaderboardPage from '../pages/LeaderboardPage';
+
 // Layout & Protection
 import ProtectedRoute from './ProtectedRoute';
 import DashboardLayout from '../layouts/DashboardLayout';
@@ -126,6 +133,61 @@ const AppRoutes = () => {
           <ProtectedRoute>
             <DashboardLayout>
               <LibraryPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/chat"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <ChatPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/social"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <SocialFeedPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/projects"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <ProjectsHubPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/marketplace"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <MarketplacePage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/leaderboard"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <LeaderboardPage />
             </DashboardLayout>
           </ProtectedRoute>
         }

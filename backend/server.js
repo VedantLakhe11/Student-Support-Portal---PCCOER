@@ -15,8 +15,15 @@ const startServer = async () => {
   // Connect to Database
   await connectDB();
 
-  // Listen on PORT
-  const server = app.listen(PORT, () => {
+  // Listen on PORT using http server to wrap express app for sockets
+  const http = require('http');
+  const server = http.createServer(app);
+
+  // Initialize Socket.IO
+  const { initSocket } = require('./utils/socket');
+  initSocket(server);
+
+  server.listen(PORT, () => {
     console.log(`[Server Running]: Port: ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
   });
 

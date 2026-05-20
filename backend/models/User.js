@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please provide a password'],
       minlength: [6, 'Password must be at least 6 characters'],
-      select: false, // Prevents password from leaking in standard queries
+      select: false,
     },
     role: {
       type: String,
@@ -58,6 +58,52 @@ const userSchema = new mongoose.Schema(
     forgotPasswordExpire: {
       type: Date,
       default: null,
+    },
+    // --- GAMIFICATION & EXP SYSTEM ---
+    xp: {
+      type: Number,
+      default: 0,
+    },
+    level: {
+      type: Number,
+      default: 1,
+    },
+    streaks: {
+      type: Number,
+      default: 1,
+    },
+    badges: {
+      type: [String],
+      default: ['Novice Navigator'],
+    },
+    // --- Rich LinkedIn / Portfolio Fields ---
+    bio: {
+      type: String,
+      default: '',
+    },
+    skills: {
+      type: [String],
+      default: [],
+    },
+    githubUrl: {
+      type: String,
+      default: '',
+    },
+    linkedinUrl: {
+      type: String,
+      default: '',
+    },
+    portfolioUrl: {
+      type: String,
+      default: '',
+    },
+    resumeUrl: {
+      type: String,
+      default: '',
+    },
+    achievements: {
+      type: [String],
+      default: [],
     },
   },
   {

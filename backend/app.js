@@ -26,6 +26,8 @@ if (process.env.NODE_ENV !== 'production') {
 const allowedOrigins = [
   'http://localhost:5173', // Vite standard dev server port
   'http://127.0.0.1:5173',
+  'http://localhost:5174', // Additional local dev port used by React
+  'http://127.0.0.1:5174',
   'https://student-support-portal-pccoer.vercel.app',
   process.env.FRONTEND_URL,
 ].filter(Boolean);
@@ -72,6 +74,12 @@ app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/university', require('./routes/universityRoutes'));
 app.use('/api/forum', require('./routes/forumRoutes'));
 app.use('/api/notifications', require('./routes/notificationRoutes'));
+app.use('/api/chat', require('./routes/chatRoutes'));
+app.use('/api/posts', require('./routes/postRoutes'));
+app.use('/api/projects', require('./routes/projectRoutes'));
+app.use('/api/marketplace', require('./routes/marketplaceRoutes'));
+app.use('/api/ai', require('./routes/aiRoutes'));
+app.use('/api/search', require('./routes/searchRoutes'));
 
 // Root endpoint for simple health-checks
 app.get('/', (req, res) => {
