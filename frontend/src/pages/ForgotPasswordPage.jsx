@@ -122,7 +122,7 @@ const ForgotPasswordPage = () => {
         ) : (
           <div className="w-full text-center space-y-6">
             <div className="inline-flex p-3 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-              <CheckCircle2 className="h-8 w-8 animate-bounce-slow" />
+              <CheckCircle2 className="h-8 w-8 " />
             </div>
 
             <div className="space-y-2">

@@ -314,7 +314,6 @@ const StudentDashboard = () => {
         <div>
           <h1 className="text-2xl md:text-3xl font-black text-slate-800 dark:text-white flex items-center gap-2">
             Welcome, {user?.name.split(' ')[0]}!
-            <Sparkles className="h-6 w-6 text-orange-500 fill-current animate-pulse-slow shrink-0" />
           </h1>
           <p className="text-slate-500 dark:text-slate-400 text-xs md:text-sm mt-1">
             Student Support Portal — {user?.dept || 'General Dept'} • PRN: {user?.prn || 'N/A'} • {user?.year || '1st Year'}
@@ -409,7 +408,7 @@ const StudentDashboard = () => {
                             value={complaintForm.category}
                             onChange={(e) => setComplaintForm({ ...complaintForm, category: e.target.value })}
                           >
-                            {categories.map((c) => <option key={c} value={c}>{c}</option>)}
+                            {categories.map((c) => <option key={c} value={c}>{c === 'Ragging' ? 'Anti-Ragging / Harassment' : c}</option>)}
                           </select>
                         </div>
                         <div className="flex items-center pt-6 pl-2">
@@ -502,7 +501,7 @@ const StudentDashboard = () => {
                   onChange={(e) => setComplaintFilters({ ...complaintFilters, category: e.target.value })}
                 >
                   <option value="All">All Categories</option>
-                  {categories.map((c) => <option key={c} value={c}>{c}</option>)}
+                  {categories.map((c) => <option key={c} value={c}>{c === 'Ragging' ? 'Anti-Ragging / Harassment' : c}</option>)}
                 </select>
                 <select
                   className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl py-2 px-3 text-xs outline-none cursor-pointer"
@@ -714,7 +713,7 @@ const StudentDashboard = () => {
                   <div key={e._id} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-850 p-6 rounded-2xl text-left flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
                     <div className="space-y-3">
                       <div className="flex justify-between items-center gap-2">
-                        <span className="text-3xl">{e.emoji || '📅'}</span>
+                        <Calendar className="h-8 w-8 text-orange-500" />
                         <span className="text-[9px] font-black uppercase tracking-wider bg-orange-500/10 text-orange-500 border border-orange-500/20 px-2.5 py-0.5 rounded-full">
                           {e.category}
                         </span>
@@ -732,7 +731,7 @@ const StudentDashboard = () => {
                       <div className="flex items-center justify-between pt-1">
                         <span className="text-[10px] font-bold text-slate-400">
                           {slotsLeft <= 5 ? (
-                            <span className="text-rose-500 font-extrabold animate-pulse">{slotsLeft} seats left!</span>
+                            <span className="text-rose-500 font-extrabold">{slotsLeft} seats left!</span>
                           ) : (
                             <span>{slotsLeft} slots remaining</span>
                           )}
@@ -745,7 +744,7 @@ const StudentDashboard = () => {
                               ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 cursor-default'
                               : slotsLeft === 0
                               ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed border dark:border-slate-800'
-                              : 'bg-orange-500 text-white hover:bg-orange-600 hover:scale-102 hover:shadow shadow-orange-500/20'
+                              : 'bg-orange-500 text-white hover:bg-orange-600 hover:shadow shadow-orange-500/20'
                           }`}
                         >
                           {isRegistered ? 'Registered' : slotsLeft === 0 ? 'Full Slot' : 'Lock Seat'}
@@ -790,7 +789,7 @@ const StudentDashboard = () => {
                   <div key={b._id} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-850 p-5 rounded-2xl flex flex-col justify-between text-left shadow-sm hover:shadow-md transition-shadow">
                     <div className="flex gap-4">
                       <div className="w-16 h-24 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-3xl flex items-center justify-center shrink-0">
-                        {b.emoji || '📖'}
+                        <BookOpen className="h-8 w-8 text-indigo-500" />
                       </div>
                       <div className="space-y-1 select-text">
                         <span className="text-[9px] font-black uppercase text-indigo-500 tracking-wider bg-indigo-500/5 px-2 py-0.5 rounded border border-indigo-500/10">

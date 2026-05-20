@@ -213,7 +213,7 @@ export default function MarketplacePage() {
                     {item.image ? (
                       <img src={item.image} className="w-full h-full object-cover transition-transform group-hover:scale-105" alt="product" />
                     ) : (
-                      <ShoppingBag className="h-10 w-10 text-slate-700 animate-pulse" />
+                      <ShoppingBag className="h-10 w-10 text-slate-700 " />
                     )}
                     <span className="absolute bottom-2 left-2 bg-orange-500/20 text-orange-400 border border-orange-500/30 px-2.5 py-0.5 rounded-full text-[9px] font-extrabold uppercase">
                       {item.category}

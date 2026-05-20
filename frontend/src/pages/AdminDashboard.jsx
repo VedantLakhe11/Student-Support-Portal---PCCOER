@@ -4,7 +4,7 @@ import {
   ShieldAlert, Clock, CheckCircle, FileText, Search, Filter, Trash2, Edit,
   Eye, Calendar, MessageSquare, ChevronLeft, ChevronRight, TrendingUp,
   Sparkles, ShieldX, ToggleLeft, ToggleRight, GraduationCap, Lightbulb,
-  Check, Ban, Users, Layers, ShieldCheck, X
+  Check, Ban, Users, Layers, ShieldCheck, X, Plus
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
@@ -186,12 +186,96 @@ const AdminDashboard = () => {
     }
   };
 
+
+  // ==========================================
+  // TAB 5: EVENTS / HACKATHONS
+  // ==========================================
+  const [events, setEvents] = useState([]);
+  const [loadingEvents, setLoadingEvents] = useState(false);
+  const [showEventModal, setShowEventModal] = useState(false);
+  const [editingEvent, setEditingEvent] = useState(null);
+  
+  const [showCreateEventModal, setShowCreateEventModal] = useState(false);
+  const [newEventForm, setNewEventForm] = useState({ title: '', description: '', location: '', category: 'Workshop', slots: 50, date: '' });
+  const [creatingEvent, setCreatingEvent] = useState(false);
+
+  const handleCreateEvent = async (e) => {
+    e.preventDefault();
+    try {
+      setCreatingEvent(true);
+      await api.post('/university/events', newEventForm);
+      toast.success('New event created successfully');
+      setShowCreateEventModal(false);
+      setNewEventForm({ title: '', description: '', location: '', category: 'Workshop', slots: 50, date: '' });
+      fetchEvents();
+    } catch (err) {
+      toast.error('Failed to create event');
+    } finally {
+      setCreatingEvent(false);
+    }
+  };
+  
+  const fetchEvents = async () => {
+    try {
+      setLoadingEvents(true);
+      const res = await api.get('/university/events');
+      setEvents(res.data.data);
+    } catch (err) {
+      toast.error('Failed to load events');
+    } finally {
+      setLoadingEvents(false);
+    }
+  };
+
+  const handleEventUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      await api.put(`/university/events/${editingEvent._id}`, editingEvent);
+      toast.success('Event updated');
+      setShowEventModal(false);
+      fetchEvents();
+    } catch (err) {
+      toast.error('Failed to update event');
+    }
+  };
+
+  // ==========================================
+  // TAB 6: FACILITIES
+  // ==========================================
+  const [facilities, setFacilities] = useState([]);
+  const [loadingFacilities, setLoadingFacilities] = useState(false);
+  
+  const fetchFacilities = async () => {
+    try {
+      setLoadingFacilities(true);
+      const res = await api.get('/university/facilities');
+      setFacilities(res.data.data);
+    } catch (err) {
+      toast.error('Failed to load facilities');
+    } finally {
+      setLoadingFacilities(false);
+    }
+  };
+
+  const handleFacilityAction = async (facId, bookingId, status) => {
+    try {
+      await api.put(`/university/facilities/${facId}/bookings/${bookingId}`, { status });
+      toast.success(`Booking ${status}`);
+      fetchFacilities();
+    } catch (err) {
+      toast.error('Action failed');
+    }
+  };
+
   // Trigger correct endpoints on activeTab change
+
   useEffect(() => {
     if (activeTab === 'Metrics') fetchStats();
     if (activeTab === 'Complaints') fetchComplaints(1);
     if (activeTab === 'Users') fetchUsers();
     if (activeTab === 'Suggestions') fetchSuggestions();
+    if (activeTab === 'Events') fetchEvents();
+    if (activeTab === 'Facilities') fetchFacilities();
   }, [activeTab, complaintFilters.category, complaintFilters.status]);
 
   // Color Mapping helpers for Recharts
@@ -216,7 +300,7 @@ const AdminDashboard = () => {
         <div>
           <h1 className="text-2xl md:text-3xl font-black text-slate-800 dark:text-white flex items-center gap-2">
             Campus Operations Center
-            <Sparkles className="h-6 w-6 text-orange-500 fill-current animate-pulse-slow shrink-0" />
+            <Sparkles className="h-6 w-6 text-orange-500 fill-current  shrink-0" />
           </h1>
           <p className="text-slate-500 dark:text-slate-400 text-xs md:text-sm mt-1">
             PCCOER Administrative Control — Decentralized grievance dispatch, user suspensions, and campus analytics.
@@ -231,6 +315,8 @@ const AdminDashboard = () => {
           { id: 'Complaints', label: 'Campus Complaints', icon: ShieldAlert },
           { id: 'Users', label: 'User Directory', icon: Users },
           { id: 'Suggestions', label: 'Suggestions Moderation', icon: Lightbulb },
+          { id: 'Events', label: 'Hackathons & Events', icon: Calendar },
+          { id: 'Facilities', label: 'Facility Requests', icon: Layers },
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -443,7 +529,7 @@ const AdminDashboard = () => {
                             <span className="text-[10px] text-slate-400 dark:text-slate-500 block mt-0.5 truncate">{c.description}</span>
                           </td>
                           <td className="p-4">
-                            <span className="text-[9px] font-extrabold text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-950 px-2 py-0.5 rounded border dark:border-slate-850">{c.category}</span>
+                            <span className={`text-[9px] font-extrabold px-2 py-0.5 rounded border ${c.category === 'Ragging' ? 'bg-red-500/10 text-red-600 border-red-500/30' : 'text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-950 dark:border-slate-850'}`}>{c.category}</span>
                           </td>
                           <td className="p-4">
                             <span className={`text-[9px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${getStatusBadge(c.status)}`}>
@@ -700,7 +786,7 @@ const AdminDashboard = () => {
                   <div key={s._id} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-850 p-6 rounded-2xl flex flex-col justify-between text-left shadow-sm relative">
                     <div className="space-y-3">
                       <div className="flex justify-between items-center gap-2">
-                        <span className="text-[10px] font-black uppercase bg-indigo-500/10 text-indigo-500 border border-indigo-500/20 px-2.5 py-0.5 rounded-full animate-pulse-slow">
+                        <span className="text-[10px] font-black uppercase bg-indigo-500/10 text-indigo-500 border border-indigo-500/20 px-2.5 py-0.5 rounded-full ">
                           {s.category}
                         </span>
                         <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
@@ -750,6 +836,153 @@ const AdminDashboard = () => {
             )}
           </div>
         )}
+
+        {/* 5. EVENTS / HACKATHONS */}
+        {activeTab === 'Events' && (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-bold text-slate-800 dark:text-white">Manage Hackathons & Events</h3>
+              <button 
+                onClick={() => setShowCreateEventModal(true)} 
+                className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-2"
+              >
+                <Plus className="h-4 w-4" /> Create New Event
+              </button>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4">
+              {events.map(ev => (
+                <div key={ev._id} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl flex flex-col justify-between">
+                  <div>
+                    <span className="text-xs font-bold text-orange-500 uppercase tracking-widest">{ev.category}</span>
+                    <h4 className="font-bold text-slate-800 dark:text-white text-base mt-1">{ev.title}</h4>
+                    <p className="text-xs text-slate-500 mt-2 line-clamp-2">{ev.description}</p>
+                    <div className="mt-3 text-[10px] text-slate-400 font-bold space-y-1">
+                      <div>Date: {new Date(ev.date).toLocaleDateString()}</div>
+                      <div>Location: {ev.location}</div>
+                      <div>Registered: {ev.registeredStudents?.length || 0} / {ev.slots}</div>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => { setEditingEvent(ev); setShowEventModal(true); }}
+                    className="mt-4 w-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-white font-bold py-2 rounded-xl text-xs transition-colors"
+                  >
+                    Edit Event Details
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* 6. FACILITIES */}
+        {activeTab === 'Facilities' && (
+          <div className="space-y-6">
+            <h3 className="text-lg font-bold text-slate-800 dark:text-white">Facility Booking Requests</h3>
+            {facilities.map(fac => (
+              <div key={fac._id} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl">
+                <h4 className="font-bold text-slate-800 dark:text-white mb-4 text-base">{fac.name} Bookings</h4>
+                <div className="space-y-3">
+                  {fac.bookings.length === 0 ? <p className="text-xs text-slate-500">No requests.</p> : fac.bookings.map(b => (
+                    <div key={b._id} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 border border-slate-100 dark:border-slate-850 rounded-xl bg-slate-50/50 dark:bg-slate-950/20">
+                      <div>
+                        <span className="text-xs font-extrabold text-slate-800 dark:text-white">{b.studentName}</span>
+                        <p className="text-[10px] text-slate-500 mt-0.5">Purpose: {b.purpose}</p>
+                        <p className="text-[10px] text-slate-400 font-bold">Date: {new Date(b.bookingDate).toLocaleDateString()} • Status: <span className={b.status === 'Pending' ? 'text-amber-500' : b.status === 'Approved' ? 'text-emerald-500' : 'text-rose-500'}>{b.status}</span></p>
+                      </div>
+                      {b.status === 'Pending' && (
+                        <div className="flex items-center gap-2 mt-3 sm:mt-0">
+                          <button onClick={() => handleFacilityAction(fac._id, b._id, 'Approved')} className="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-[10px] font-bold rounded-lg">Approve</button>
+                          <button onClick={() => handleFacilityAction(fac._id, b._id, 'Rejected')} className="px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white text-[10px] font-bold rounded-lg">Reject</button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* EVENT CREATE MODAL */}
+        <AnimatePresence>
+          {showCreateEventModal && (
+            <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+              <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} className="w-full max-w-md p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-4">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-black text-slate-800 dark:text-white">Create New Event</h3>
+                  <button onClick={() => setShowCreateEventModal(false)} className="p-1 rounded-full text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"><X className="h-5 w-5" /></button>
+                </div>
+                <form onSubmit={handleCreateEvent} className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 mb-1">Title</label>
+                    <input type="text" value={newEventForm.title} onChange={e => setNewEventForm({...newEventForm, title: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl px-3 py-2 text-sm outline-none" required />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 mb-1">Description</label>
+                    <textarea rows="2" value={newEventForm.description} onChange={e => setNewEventForm({...newEventForm, description: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl px-3 py-2 text-sm outline-none resize-none" required />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-500 mb-1">Category</label>
+                      <select value={newEventForm.category} onChange={e => setNewEventForm({...newEventForm, category: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl px-3 py-2 text-sm outline-none">
+                        <option value="Workshop">Workshop</option>
+                        <option value="Seminar">Seminar</option>
+                        <option value="Hackathon">Hackathon</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-500 mb-1">Date</label>
+                      <input type="date" value={newEventForm.date} onChange={e => setNewEventForm({...newEventForm, date: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl px-3 py-2 text-sm outline-none" required />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-500 mb-1">Location</label>
+                      <input type="text" value={newEventForm.location} onChange={e => setNewEventForm({...newEventForm, location: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl px-3 py-2 text-sm outline-none" required />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-500 mb-1">Slots Limit</label>
+                      <input type="number" value={newEventForm.slots} onChange={e => setNewEventForm({...newEventForm, slots: parseInt(e.target.value)})} className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl px-3 py-2 text-sm outline-none" required />
+                    </div>
+                  </div>
+                  <button type="submit" disabled={creatingEvent} className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2.5 rounded-xl text-sm mt-2">
+                    {creatingEvent ? 'Creating...' : 'Create Event'}
+                  </button>
+                </form>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
+
+        {/* EVENT EDIT MODAL */}
+        <AnimatePresence>
+          {showEventModal && editingEvent && (
+            <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+              <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} className="w-full max-w-md p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-4">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-black text-slate-800 dark:text-white">Edit Event</h3>
+                  <button onClick={() => setShowEventModal(false)} className="p-1 rounded-full text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"><X className="h-5 w-5" /></button>
+                </div>
+                <form onSubmit={handleEventUpdate} className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 mb-1">Title</label>
+                    <input type="text" value={editingEvent.title} onChange={e => setEditingEvent({...editingEvent, title: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl px-3 py-2 text-sm outline-none" required />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 mb-1">Location</label>
+                    <input type="text" value={editingEvent.location} onChange={e => setEditingEvent({...editingEvent, location: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl px-3 py-2 text-sm outline-none" required />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 mb-1">Slots Limit</label>
+                    <input type="number" value={editingEvent.slots} onChange={e => setEditingEvent({...editingEvent, slots: parseInt(e.target.value)})} className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl px-3 py-2 text-sm outline-none" required />
+                  </div>
+                  <button type="submit" className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2.5 rounded-xl text-sm">Save Changes</button>
+                </form>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
+
       </div>
     </div>
   );

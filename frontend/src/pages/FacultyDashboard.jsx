@@ -186,7 +186,7 @@ const FacultyDashboard = () => {
         <div>
           <h1 className="text-2xl md:text-3xl font-black text-slate-800 dark:text-white flex items-center gap-2">
             Welcome Professor, {activeUser?.name.split(' ')[0]}!
-            <Sparkles className="h-6 w-6 text-orange-500 fill-current animate-pulse-slow shrink-0" />
+            <Sparkles className="h-6 w-6 text-orange-500 fill-current  shrink-0" />
           </h1>
           <p className="text-slate-500 dark:text-slate-400 text-xs md:text-sm mt-1">
             Faculty Dashboard • PCCOER {activeUser?.dept || 'Engineering Faculty'} Department Portal
@@ -238,7 +238,7 @@ const FacultyDashboard = () => {
         {activeTab === 'Complaints' && (
           <div className="space-y-6">
             {loadingComplaints ? (
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 ">
                 {[1, 2, 3].map(n => <div key={n} className="h-40 bg-slate-100 dark:bg-slate-900 rounded-2xl" />)}
               </div>
             ) : complaints.length === 0 ? (
@@ -495,7 +495,7 @@ const FacultyDashboard = () => {
                 <div key={e._id} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-850 p-6 rounded-2xl text-left flex flex-col justify-between shadow-sm relative">
                   <div className="space-y-3">
                     <div className="flex justify-between items-center gap-2">
-                      <span className="text-3xl">{e.emoji || '🎤'}</span>
+                      <Calendar className="h-8 w-8 text-orange-500" />
                       <span className="text-[9px] font-black uppercase tracking-wider bg-orange-500/10 text-orange-500 border border-orange-500/20 px-2.5 py-0.5 rounded-full">
                         {e.category}
                       </span>
@@ -528,7 +528,7 @@ const FacultyDashboard = () => {
               {/* Left Column: Create Post Form */}
               <div className="md:col-span-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm space-y-5">
                 <div className="flex items-center gap-2">
-                  <MessagesSquare className="h-5 w-5 text-indigo-500 animate-pulse" />
+                  <MessagesSquare className="h-5 w-5 text-indigo-500 " />
                   <h3 className="text-lg font-black text-slate-800 dark:text-white">Broadcast Thread</h3>
                 </div>
 

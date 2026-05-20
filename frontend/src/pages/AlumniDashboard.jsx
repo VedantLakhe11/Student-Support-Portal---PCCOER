@@ -166,7 +166,7 @@ const AlumniDashboard = () => {
         <div>
           <h1 className="text-2xl md:text-3xl font-black text-slate-800 dark:text-white flex items-center gap-2">
             Welcome Mentor, {activeUser?.name.split(' ')[0]}!
-            <Sparkles className="h-6 w-6 text-orange-500 fill-current animate-pulse-slow shrink-0" />
+            <Sparkles className="h-6 w-6 text-orange-500 fill-current  shrink-0" />
           </h1>
           <p className="text-slate-500 dark:text-slate-400 text-xs md:text-sm mt-1">
             Alumni & Corporate Guidance Dashboard • PCCOER Campus Support Network

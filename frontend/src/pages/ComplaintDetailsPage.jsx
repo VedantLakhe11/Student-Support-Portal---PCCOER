@@ -85,7 +85,7 @@ const ComplaintDetailsPage = () => {
       case 'Resolved':
         return <CheckCircle className="h-5 w-5 text-emerald-600" />;
       case 'In Progress':
-        return <Clock className="h-5 w-5 text-amber-600 animate-pulse" />;
+        return <Clock className="h-5 w-5 text-amber-600 " />;
       default:
         return <AlertTriangle className="h-5 w-5 text-rose-600" />;
     }

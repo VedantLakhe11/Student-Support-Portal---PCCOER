@@ -465,7 +465,7 @@ export default function ChatPage() {
             </div>
           </div>
           <div className="flex items-center gap-1 bg-slate-900 px-2 py-0.5 rounded-full border border-slate-800 shrink-0">
-            <Award className="h-3 w-3 text-orange-500 animate-pulse" />
+            <Award className="h-3 w-3 text-orange-500 " />
             <span className="text-[9px] font-extrabold text-orange-400">Lv.{user?.level || 1}</span>
           </div>
         </div>
@@ -504,7 +504,7 @@ export default function ChatPage() {
         <div className="flex-1 p-6 overflow-y-auto space-y-4 max-h-[calc(100vh-220px)]">
           {messages.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-slate-500 space-y-2">
-              <MessageSquare className="h-10 w-10 text-slate-700 animate-bounce" />
+              <MessageSquare className="h-10 w-10 text-slate-700 " />
               <span className="text-xs font-bold">This marks the absolute beginning of this dialogue stream.</span>
               <span className="text-[10px] text-slate-600">Send an active packet to start connecting!</span>
             </div>

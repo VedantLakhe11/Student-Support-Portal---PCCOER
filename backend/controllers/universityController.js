@@ -203,6 +203,33 @@ const createEvent = async (req, res, next) => {
   }
 };
 
+// @desc    Update an event
+// @route   PUT /api/university/events/:id
+// @access  Private (Admin / Faculty)
+const updateEvent = async (req, res, next) => {
+  try {
+    const event = await Event.findById(req.params.id);
+    if (!event) {
+      res.status(404);
+      throw new Error('Event not found');
+    }
+
+    const updatedEvent = await Event.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+
+    res.json({
+      success: true,
+      message: 'Event updated successfully',
+      data: updatedEvent,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // ==========================================
 // 3. MENTOR & ALUMNI INTERACTION
 // ==========================================
@@ -472,6 +499,42 @@ const bookFacility = async (req, res, next) => {
   }
 };
 
+// @desc    Approve/Reject facility booking request
+// @route   PUT /api/university/facilities/:id/bookings/:bookingId
+// @access  Private (Admin)
+const resolveFacilityBooking = async (req, res, next) => {
+  try {
+    const { status } = req.body;
+    if (!['Approved', 'Rejected'].includes(status)) {
+      res.status(400);
+      throw new Error('Status must be Approved or Rejected');
+    }
+
+    const facility = await Facility.findById(req.params.id);
+    if (!facility) {
+      res.status(404);
+      throw new Error('Facility not found');
+    }
+
+    const booking = facility.bookings.id(req.params.bookingId);
+    if (!booking) {
+      res.status(404);
+      throw new Error('Booking request not found');
+    }
+
+    booking.status = status;
+    await facility.save();
+
+    res.json({
+      success: true,
+      message: `Booking request has been ${status.toLowerCase()}`,
+      data: facility,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createSuggestion,
   getSuggestions,
@@ -487,4 +550,6 @@ module.exports = {
   createBook,
   getFacilities,
   bookFacility,
+  updateEvent,
+  resolveFacilityBooking,
 };

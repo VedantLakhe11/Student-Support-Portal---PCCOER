@@ -65,7 +65,7 @@ const Navbar = ({ onMenuToggle }) => {
             alt="PCCOER Logo"
             className="h-9 w-9 rounded-full object-cover border border-slate-200 dark:border-slate-800"
           />
-          <span className="font-bold text-xl bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent hidden sm:inline-block">
+          <span className="font-bold text-xl text-slate-800 dark:text-slate-100 hidden sm:inline-block">
             PCCOER Portal
           </span>
         </div>
@@ -187,7 +187,7 @@ const Navbar = ({ onMenuToggle }) => {
           aria-label="Toggle theme"
         >
           {theme === 'dark' ? (
-            <Sun className="h-5 w-5 text-amber-500 animate-pulse-slow" />
+            <Sun className="h-5 w-5 text-amber-500" />
           ) : (
             <Moon className="h-5 w-5 text-indigo-600" />
           )}
@@ -199,7 +199,7 @@ const Navbar = ({ onMenuToggle }) => {
             onClick={() => setDropdownOpen((prev) => !prev)}
             className="flex items-center gap-2.5 p-1.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 border border-transparent hover:border-slate-200/50 dark:hover:border-slate-800/50 transition-all"
           >
-            <div className="h-9 w-9 rounded-full bg-gradient-to-tr from-brand-600 to-indigo-500 text-white font-bold flex items-center justify-center shadow-sm">
+            <div className="h-9 w-9 rounded-full bg-slate-800 dark:bg-slate-700 text-white font-bold flex items-center justify-center shadow-sm">
               {getInitials(user?.name)}
             </div>
             <div className="text-left hidden md:block px-1">

@@ -50,7 +50,7 @@ const Sidebar = ({ isOpen, onClose }) => {
   ];
 
   const activeClass =
-    'flex items-center justify-between px-4 py-3 rounded-xl bg-gradient-to-r from-brand-600 to-indigo-600 text-white font-medium shadow-md shadow-brand-500/20 transition-all duration-200';
+    'flex items-center justify-between px-4 py-3 rounded-xl bg-slate-800 dark:bg-slate-700 text-white font-medium shadow-sm transition-all duration-200';
   const inactiveClass =
     'flex items-center justify-between px-4 py-3 rounded-xl text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/60 font-medium transition-all duration-200';
 
@@ -118,13 +118,10 @@ const Sidebar = ({ isOpen, onClose }) => {
 
         {/* Lower Segment: Profile banner & Logout */}
         <div className="space-y-4">
-          {/* Premium banner promotion */}
-          <div className="bg-gradient-to-br from-indigo-50 to-brand-50/50 dark:from-slate-800 dark:to-brand-950/10 p-4 rounded-2xl border border-indigo-100/50 dark:border-slate-800/40 relative overflow-hidden">
-            <div className="absolute -right-3 -bottom-3 bg-brand-500/10 dark:bg-brand-500/5 p-4 rounded-full">
-              <Sparkles className="h-10 w-10 text-brand-600/20" />
-            </div>
-            <h4 className="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400 mb-1 flex items-center gap-1.5">
-              <Sparkles className="h-3 w-3 stroke-[2.5]" />
+          {/* Support Banner */}
+          <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/50 relative overflow-hidden">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5">
+              <ShieldAlert className="h-3 w-3 stroke-[2.5]" />
               PCCOER Support
             </h4>
             <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">

@@ -3,12 +3,12 @@ import { useAuth } from '../hooks/useAuth';
 import { Search, Book, PlusCircle, CheckCircle, AlertCircle, Bookmark, Trash } from 'lucide-react';
 
 const INITIAL_BOOKS = [
-  { id: 1, title: 'Data Structures & Algorithms', author: 'Thomas H. Cormen', category: 'Computer Engineering', available: 3, total: 5, emoji: '📘', color: 'from-blue-500/10 to-indigo-500/10 text-blue-600 dark:text-blue-400' },
-  { id: 2, title: 'Clean Code', author: 'Robert C. Martin', category: 'Software Engineering', available: 0, total: 3, emoji: '📗', color: 'from-emerald-500/10 to-green-500/10 text-emerald-600 dark:text-emerald-400' },
-  { id: 3, title: 'Operating Systems Concepts', author: 'Silberschatz & Galvin', category: 'Information Technology', available: 2, total: 4, emoji: '📙', color: 'from-amber-500/10 to-orange-500/10 text-amber-600 dark:text-amber-400' },
-  { id: 4, title: 'Database Management Systems', author: 'Ramakrishnan & Gehrke', category: 'Computer Engineering', available: 5, total: 5, emoji: '📕', color: 'from-rose-500/10 to-red-500/10 text-rose-600 dark:text-rose-400' },
-  { id: 5, title: 'Computer Networks', author: 'Andrew Tanenbaum', category: 'ENTC', available: 1, total: 3, emoji: '📓', color: 'from-violet-500/10 to-purple-500/10 text-violet-600 dark:text-violet-400' },
-  { id: 6, title: 'Artificial Intelligence: A Modern Approach', author: 'Russell & Norvig', category: 'Artificial Intelligence', available: 2, total: 2, emoji: '📔', color: 'from-sky-500/10 to-cyan-500/10 text-sky-600 dark:text-sky-400' },
+  { id: 1, title: 'Data Structures & Algorithms', author: 'Thomas H. Cormen', category: 'Computer Engineering', available: 3, total: 5,  color: 'from-blue-500/10 to-indigo-500/10 text-blue-600 dark:text-blue-400' },
+  { id: 2, title: 'Clean Code', author: 'Robert C. Martin', category: 'Software Engineering', available: 0, total: 3,  color: 'from-emerald-500/10 to-green-500/10 text-emerald-600 dark:text-emerald-400' },
+  { id: 3, title: 'Operating Systems Concepts', author: 'Silberschatz & Galvin', category: 'Information Technology', available: 2, total: 4,  color: 'from-amber-500/10 to-orange-500/10 text-amber-600 dark:text-amber-400' },
+  { id: 4, title: 'Database Management Systems', author: 'Ramakrishnan & Gehrke', category: 'Computer Engineering', available: 5, total: 5,  color: 'from-rose-500/10 to-red-500/10 text-rose-600 dark:text-rose-400' },
+  { id: 5, title: 'Computer Networks', author: 'Andrew Tanenbaum', category: 'ENTC', available: 1, total: 3,  color: 'from-violet-500/10 to-purple-500/10 text-violet-600 dark:text-violet-400' },
+  { id: 6, title: 'Artificial Intelligence: A Modern Approach', author: 'Russell & Norvig', category: 'Artificial Intelligence', available: 2, total: 2,  color: 'from-sky-500/10 to-cyan-500/10 text-sky-600 dark:text-sky-400' },
 ];
 
 const LibraryPage = () => {
@@ -27,7 +27,7 @@ const LibraryPage = () => {
     author: '',
     category: 'Computer Engineering',
     total: 5,
-    emoji: '📘',
+    
   });
 
   const showAlert = (message, type = 'success') => {
@@ -63,7 +63,7 @@ const LibraryPage = () => {
       return;
     }
 
-    const emojis = ['📘', '📗', '📙', '📕', '📓', '📔'];
+    
     const colors = [
       'from-blue-500/10 to-indigo-500/10 text-blue-600 dark:text-blue-400',
       'from-emerald-500/10 to-green-500/10 text-emerald-600 dark:text-emerald-400',
@@ -73,7 +73,7 @@ const LibraryPage = () => {
     ];
 
     const randomColor = colors[Math.floor(Math.random() * colors.length)];
-    const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+    
 
     const createdBook = {
       id: Date.now(),
@@ -82,13 +82,13 @@ const LibraryPage = () => {
       category: newBook.category,
       available: parseInt(newBook.total),
       total: parseInt(newBook.total),
-      emoji: randomEmoji,
+      
       color: randomColor,
     };
 
     setBooks([createdBook, ...books]);
     setShowAddForm(false);
-    setNewBook({ title: '', author: '', category: 'Computer Engineering', total: 5, emoji: '📘' });
+    setNewBook({ title: '', author: '', category: 'Computer Engineering', total: 5,  });
     showAlert(`Successfully added "${createdBook.title}" to database!`, 'success');
   };
 
@@ -258,7 +258,7 @@ const LibraryPage = () => {
             >
               {/* Cover Design */}
               <div className={`h-16 w-12 rounded-xl flex-shrink-0 flex items-center justify-center text-2xl font-bold bg-gradient-to-br shadow-inner shadow-black/5 ${book.color}`}>
-                {book.emoji}
+                <BookOpen className="h-8 w-8 text-indigo-500" />
               </div>
 
               {/* Info Column */}
@@ -275,7 +275,7 @@ const LibraryPage = () => {
 
                 {/* Copies Left */}
                 <div className="pt-2 flex items-center gap-1.5">
-                  <span className={`h-1.5 w-1.5 rounded-full ${book.available > 0 ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'}`} />
+                  <span className={`h-1.5 w-1.5 rounded-full ${book.available > 0 ? 'bg-emerald-500' : 'bg-rose-500'}`} />
                   <span className={`text-[11px] font-bold ${
                     book.available > 2 ? 'text-emerald-600 dark:text-emerald-400' :
                     book.available > 0 ? 'text-amber-600 dark:text-amber-400' :
