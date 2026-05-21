@@ -23,6 +23,9 @@ import SocialFeedPage from '../pages/SocialFeedPage';
 import ProjectsHubPage from '../pages/ProjectsHubPage';
 import MarketplacePage from '../pages/MarketplacePage';
 import LeaderboardPage from '../pages/LeaderboardPage';
+import EventsDashboard from '../pages/EventsDashboard';
+import EventDetailsPage from '../pages/EventDetailsPage';
+import CreateEventPage from '../pages/CreateEventPage';
 
 // Layout & Protection
 import ProtectedRoute from './ProtectedRoute';
@@ -177,6 +180,39 @@ const AppRoutes = () => {
           <ProtectedRoute>
             <DashboardLayout>
               <MarketplacePage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/events"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <EventsDashboard />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/events/:id"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <EventDetailsPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/events/create"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <CreateEventPage />
             </DashboardLayout>
           </ProtectedRoute>
         }

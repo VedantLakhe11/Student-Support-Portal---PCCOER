@@ -5,9 +5,6 @@ const {
   createSuggestion,
   getSuggestions,
   voteSuggestion,
-  getEvents,
-  registerForEvent,
-  createEvent,
   getMentors,
   requestMentorship,
   postPlacementExperience,
@@ -16,7 +13,6 @@ const {
   createBook,
   getFacilities,
   bookFacility,
-  updateEvent,
   resolveFacilityBooking,
 } = require('../controllers/universityController');
 
@@ -25,11 +21,7 @@ router.post('/suggestions', protect, createSuggestion);
 router.get('/suggestions', protect, getSuggestions);
 router.post('/suggestions/:id/vote', protect, voteSuggestion);
 
-// Events
-router.get('/events', protect, getEvents);
-router.post('/events', protect, authorizeAdmin, createEvent);
-router.put('/events/:id', protect, authorizeAdmin, updateEvent);
-router.post('/events/:id/register', protect, registerForEvent);
+
 
 // Mentorship & Alumni
 router.get('/mentors', protect, getMentors);

@@ -9,10 +9,11 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const StudentDashboard = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   // Active Main tab: 'Complaints', 'Suggestions', 'Events', 'Library', 'Mentorship', 'Facilities', 'Forum'
   const [activeTab, setActiveTab] = useState('Complaints');
@@ -139,7 +140,7 @@ const StudentDashboard = () => {
   const [events, setEvents] = useState([]);
   const fetchEvents = async () => {
     try {
-      const res = await api.get('/university/events');
+      const res = await api.get('/events');
       setEvents(res.data.data);
     } catch (err) {
       toast.error('Failed to retrieve events feed.');
@@ -147,13 +148,7 @@ const StudentDashboard = () => {
   };
 
   const registerForEvent = async (id) => {
-    try {
-      const res = await api.post(`/university/events/${id}/register`);
-      toast.success(res.data.message);
-      fetchEvents();
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Registration failed.');
-    }
+    navigate(`/events/${id}`);
   };
 
   // ==========================================
@@ -737,17 +732,10 @@ const StudentDashboard = () => {
                           )}
                         </span>
                         <button
-                          onClick={() => registerForEvent(e._id)}
-                          disabled={isRegistered || slotsLeft === 0}
-                          className={`px-4 py-2 rounded-xl text-xs font-black uppercase transition-all ${
-                            isRegistered
-                              ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 cursor-default'
-                              : slotsLeft === 0
-                              ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed border dark:border-slate-800'
-                              : 'bg-orange-500 text-white hover:bg-orange-600 hover:shadow shadow-orange-500/20'
-                          }`}
+                          onClick={() => navigate(`/events/${e._id}`)}
+                          className={`px-4 py-2 rounded-xl text-xs font-black uppercase transition-all bg-orange-500 text-white hover:bg-orange-600 hover:shadow shadow-orange-500/20`}
                         >
-                          {isRegistered ? 'Registered' : slotsLeft === 0 ? 'Full Slot' : 'Lock Seat'}
+                          View Details
                         </button>
                       </div>
                     </div>

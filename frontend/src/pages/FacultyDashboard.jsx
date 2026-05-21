@@ -89,27 +89,24 @@ const FacultyDashboard = () => {
 
   const fetchEvents = async () => {
     try {
-      const res = await api.get('/university/events');
+      const res = await api.get('/events');
       setEvents(res.data.data);
     } catch (err) {
-      toast.error('Failed to retrieve events feed.');
+      toast.error('Failed to load campus events.');
     }
   };
 
   const createEvent = async (e) => {
     e.preventDefault();
-    if (!eventForm.title.trim() || !eventForm.description.trim() || !eventForm.date) {
-      return toast.error('Please enter event title, description and date');
-    }
     try {
       setCreatingEvent(true);
-      await api.post('/university/events', eventForm);
-      toast.success('New campus event cataloged successfully!');
+      await api.post('/events', eventForm);
+      toast.success('Event request published successfully! Pending Admin approval.');
       setShowEventForm(false);
-      setEventForm({ title: '', description: '', date: '', location: '', category: 'Hackathon', slots: 50 });
+      setEventForm({ title: '', description: '', date: '', location: '', category: 'Workshop', slots: 50 });
       fetchEvents();
     } catch (err) {
-      toast.error(err.cleanMessage || 'Failed to register event.');
+      toast.error('Failed to publish event.');
     } finally {
       setCreatingEvent(false);
     }

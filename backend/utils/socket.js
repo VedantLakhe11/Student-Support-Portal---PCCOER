@@ -72,7 +72,7 @@ const initSocket = (server) => {
     // ==========================================
 
     // User initiates call request
-    socket.on('call-user', ({ targetUserId, offer, signalData, roomId }) => {
+    socket.on('call-user', ({ targetUserId, offer, signalData, roomId, callType }) => {
       const targetSocketId = onlineUsers.get(targetUserId);
       if (targetSocketId) {
         io.to(targetSocketId).emit('incoming-call', {
@@ -81,6 +81,7 @@ const initSocket = (server) => {
           offer,
           signalData,
           roomId,
+          callType,
         });
       }
     });

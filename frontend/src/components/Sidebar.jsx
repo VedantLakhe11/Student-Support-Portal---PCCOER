@@ -13,6 +13,11 @@ const Sidebar = ({ isOpen, onClose }) => {
       icon: LayoutDashboard,
     },
     {
+      name: 'Events & Hackathons',
+      path: '/events',
+      icon: Trophy,
+    },
+    {
       name: 'Library Section',
       path: '/library',
       icon: BookOpen,

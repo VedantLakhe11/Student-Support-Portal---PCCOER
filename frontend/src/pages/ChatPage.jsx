@@ -36,6 +36,18 @@ export default function ChatPage() {
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
   const localStreamRef = useRef(null);
+  const remoteStreamRef = useRef(null);
+  
+  const peerConnectionRef = useRef(null);
+  const incomingOfferRef = useRef(null);
+  const pendingCandidatesRef = useRef([]);
+
+  const rtcConfig = {
+    iceServers: [
+      { urls: 'stun:stun.l.google.com:19302' },
+      { urls: 'stun:stun1.l.google.com:19302' }
+    ]
+  };
 
   const socket = getSocket();
   const bottomRef = useRef(null);
@@ -71,15 +83,41 @@ export default function ChatPage() {
       });
 
       // Signaling Call Handlers
-      sock.on('incoming-call', ({ callerId, callerName, offer, roomId }) => {
+      sock.on('incoming-call', ({ callerId, callerName, offer, roomId, callType }) => {
         setCallState('receiving');
         setCallPartner({ _id: callerId, name: callerName });
-        setActiveCall('video'); // default incoming
+        setActiveCall(callType || 'video');
+        incomingOfferRef.current = offer;
       });
 
-      sock.on('call-answered', () => {
+      sock.on('call-answered', async ({ answer }) => {
+        if (callState === 'connected') return; // Prevent double processing
         setCallState('connected');
-        startLocalStream();
+        if (peerConnectionRef.current && answer) {
+          try {
+            await peerConnectionRef.current.setRemoteDescription(new RTCSessionDescription(answer));
+            // Process queued candidates
+            pendingCandidatesRef.current.forEach(async (candidate) => {
+              try {
+                await peerConnectionRef.current.addIceCandidate(candidate);
+              } catch (e) { console.error(e); }
+            });
+            pendingCandidatesRef.current = [];
+          } catch(err) { console.error("setRemoteDescription error", err); }
+        }
+      });
+      
+      sock.on('meeting-signal-receive', async ({ signal, from }) => {
+        if (signal && signal.candidate && peerConnectionRef.current) {
+          const rtcCandidate = new RTCIceCandidate(signal.candidate);
+          if (!peerConnectionRef.current.remoteDescription) {
+            pendingCandidatesRef.current.push(rtcCandidate);
+          } else {
+            try {
+              await peerConnectionRef.current.addIceCandidate(rtcCandidate);
+            } catch(err) { console.error("addIceCandidate error", err); }
+          }
+        }
       });
 
       sock.on('call-ended', () => {
@@ -94,6 +132,7 @@ export default function ChatPage() {
         sock.off('typing-status');
         sock.off('incoming-call');
         sock.off('call-answered');
+        sock.off('meeting-signal-receive');
         sock.off('call-ended');
       }
     };
@@ -112,6 +151,18 @@ export default function ChatPage() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  // Re-attach local/remote streams if video elements mount after streams are initialized (Caller state transitions)
+  useEffect(() => {
+    if (callState === 'connected') {
+      if (localStreamRef.current && localVideoRef.current && localVideoRef.current.srcObject !== localStreamRef.current) {
+        localVideoRef.current.srcObject = localStreamRef.current;
+      }
+      if (remoteStreamRef.current && remoteVideoRef.current && remoteVideoRef.current.srcObject !== remoteStreamRef.current) {
+        remoteVideoRef.current.srcObject = remoteStreamRef.current;
+      }
+    }
+  }, [callState]);
 
   const fetchConversations = async () => {
     try {
@@ -273,7 +324,7 @@ export default function ChatPage() {
   };
 
   // WebRTC Audio/Video Room Call Actions
-  const startCall = (type) => {
+  const startCall = async (type) => {
     if (!activeConv) return;
     const partner = activeConv.participants.find((p) => p._id !== user.id);
     if (!partner) {
@@ -285,43 +336,128 @@ export default function ChatPage() {
     setActiveCall(type);
     setCallState('calling');
 
-    const sock = getSocket();
-    if (sock) {
-      sock.emit('call-user', {
-        targetUserId: partner._id,
-        roomId: activeConv._id,
-        offer: { type: 'offer', sdp: 'sdp-signaling-mock' },
+    try {
+      await startLocalStream(type);
+      const pc = new RTCPeerConnection(rtcConfig);
+      peerConnectionRef.current = pc;
+      pendingCandidatesRef.current = [];
+      
+      localStreamRef.current.getTracks().forEach((track) => {
+        pc.addTrack(track, localStreamRef.current);
       });
-    }
 
-    // Auto-timeout if call unanswered
-    setTimeout(() => {
-      setCallState((state) => {
-        if (state === 'calling') {
-          toast.error('Recipient did not answer.');
-          cleanupCall();
+      pc.ontrack = (event) => {
+        if (event.streams[0]) {
+          remoteStreamRef.current = event.streams[0];
+          if (remoteVideoRef.current) {
+            remoteVideoRef.current.srcObject = event.streams[0];
+          }
         }
-        return state;
-      });
-    }, 12000);
-  };
+      };
 
-  const acceptCall = () => {
-    setCallState('connected');
-    const sock = getSocket();
-    if (sock && callPartner) {
-      sock.emit('answer-call', {
-        targetUserId: callPartner._id,
-        answer: { type: 'answer', sdp: 'sdp-answer-mock' },
-      });
+      const sock = getSocket();
+      pc.onicecandidate = (event) => {
+        if (event.candidate && sock) {
+          sock.emit('meeting-signal', {
+            roomId: activeConv._id,
+            signal: { candidate: event.candidate },
+            to: partner._id,
+          });
+        }
+      };
+
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+
+      if (sock) {
+        sock.emit('call-user', {
+          targetUserId: partner._id,
+          roomId: activeConv._id,
+          offer: pc.localDescription,
+          callType: type
+        });
+      }
+
+      // Auto-timeout if call unanswered
+      setTimeout(() => {
+        setCallState((state) => {
+          if (state === 'calling') {
+            toast.error('Recipient did not answer.');
+            cleanupCall();
+          }
+          return state;
+        });
+      }, 30000);
+    } catch(err) {
+      toast.error('Failed to start call. Check camera/mic permissions.');
+      cleanupCall();
     }
-    startLocalStream();
   };
 
-  const startLocalStream = async () => {
+  const acceptCall = async () => {
+    setCallState('connected');
+    
+    try {
+      await startLocalStream(activeCall);
+      const pc = new RTCPeerConnection(rtcConfig);
+      peerConnectionRef.current = pc;
+      pendingCandidatesRef.current = [];
+      
+      localStreamRef.current.getTracks().forEach((track) => {
+        pc.addTrack(track, localStreamRef.current);
+      });
+
+      pc.ontrack = (event) => {
+        if (event.streams[0]) {
+          remoteStreamRef.current = event.streams[0];
+          if (remoteVideoRef.current) {
+            remoteVideoRef.current.srcObject = event.streams[0];
+          }
+        }
+      };
+
+      const sock = getSocket();
+      pc.onicecandidate = (event) => {
+        if (event.candidate && sock && callPartner) {
+          sock.emit('meeting-signal', {
+            roomId: activeConv._id,
+            signal: { candidate: event.candidate },
+            to: callPartner._id,
+          });
+        }
+      };
+
+      if (incomingOfferRef.current) {
+        await pc.setRemoteDescription(new RTCSessionDescription(incomingOfferRef.current));
+        
+        // Process queued ICE candidates that arrived before we set remote description
+        pendingCandidatesRef.current.forEach(async (candidate) => {
+          try {
+            await pc.addIceCandidate(candidate);
+          } catch (e) { console.error(e); }
+        });
+        pendingCandidatesRef.current = [];
+
+        const answer = await pc.createAnswer();
+        await pc.setLocalDescription(answer);
+        
+        if (sock && callPartner) {
+          sock.emit('answer-call', {
+            targetUserId: callPartner._id,
+            answer: pc.localDescription,
+          });
+        }
+      }
+    } catch(err) {
+      toast.error('Failed to accept call. Check camera/mic permissions.');
+      cleanupCall();
+    }
+  };
+
+  const startLocalStream = async (type) => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: cameraActive,
+        video: type === 'video' ? cameraActive : false,
         audio: micActive,
       });
       localStreamRef.current = stream;
@@ -329,7 +465,8 @@ export default function ChatPage() {
         localVideoRef.current.srcObject = stream;
       }
     } catch (err) {
-      console.warn('Streams initialized in mock simulation mode.');
+      console.warn('Failed to access media devices', err);
+      throw err;
     }
   };
 
@@ -345,10 +482,22 @@ export default function ChatPage() {
     if (localStreamRef.current) {
       localStreamRef.current.getTracks().forEach((track) => track.stop());
     }
+    if (peerConnectionRef.current) {
+      peerConnectionRef.current.close();
+      peerConnectionRef.current = null;
+    }
+    if (localVideoRef.current) {
+      localVideoRef.current.srcObject = null;
+    }
+    if (remoteVideoRef.current) {
+      remoteVideoRef.current.srcObject = null;
+    }
+    remoteStreamRef.current = null;
     setActiveCall(null);
     setCallState('idle');
     setCallPartner(null);
     setScreenSharing(false);
+    incomingOfferRef.current = null;
   };
 
   const toggleMic = () => {
@@ -629,20 +778,25 @@ export default function ChatPage() {
             </div>
 
             {/* Video Streams window layout */}
-            {callState === 'connected' && activeCall === 'video' && (
+            {callState === 'connected' && (
               <div className="grid grid-cols-2 gap-4 w-full h-48 bg-slate-950 rounded-2xl p-2 border border-slate-800 overflow-hidden">
                 <div className="bg-slate-900 rounded-xl overflow-hidden relative border border-slate-800">
-                  {cameraActive ? (
+                  {cameraActive && activeCall === 'video' ? (
                     <video ref={localVideoRef} autoPlay playsInline muted className="w-full h-full object-cover transform -scale-x-100" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-xs text-slate-500 bg-slate-950">Camera Muted</div>
+                    <div className="w-full h-full flex items-center justify-center text-xs text-slate-500 bg-slate-950">
+                      {activeCall === 'video' ? 'Camera Muted' : 'Audio Call'}
+                    </div>
                   )}
                   <span className="absolute bottom-2 left-2 bg-black/60 px-2 py-0.5 rounded text-[9px] font-bold">You</span>
                 </div>
                 <div className="bg-slate-900 rounded-xl overflow-hidden relative border border-slate-800">
-                  <div className="w-full h-full flex items-center justify-center text-xs text-slate-500 bg-slate-950 animate-pulse">
-                    Peer Stream Active
-                  </div>
+                  <video ref={remoteVideoRef} autoPlay playsInline className={`w-full h-full object-cover ${activeCall === 'audio' ? 'hidden' : ''}`} />
+                  {activeCall === 'audio' && (
+                    <div className="w-full h-full flex items-center justify-center text-xs text-slate-500 bg-slate-950 animate-pulse">
+                      Audio Stream Active
+                    </div>
+                  )}
                   <span className="absolute bottom-2 left-2 bg-black/60 px-2 py-0.5 rounded text-[9px] font-bold">{callPartner?.name}</span>
                 </div>
               </div>

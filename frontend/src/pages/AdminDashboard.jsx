@@ -203,10 +203,10 @@ const AdminDashboard = () => {
     e.preventDefault();
     try {
       setCreatingEvent(true);
-      await api.post('/university/events', newEventForm);
-      toast.success('New event created successfully');
+      await api.post('/events', newEventForm);
+      toast.success('Event published successfully!');
+      setNewEventForm({ title: '', description: '', date: '', location: '', category: 'Hackathon', slots: 50 });
       setShowCreateEventModal(false);
-      setNewEventForm({ title: '', description: '', location: '', category: 'Workshop', slots: 50, date: '' });
       fetchEvents();
     } catch (err) {
       toast.error('Failed to create event');
@@ -218,10 +218,10 @@ const AdminDashboard = () => {
   const fetchEvents = async () => {
     try {
       setLoadingEvents(true);
-      const res = await api.get('/university/events');
+      const res = await api.get('/events');
       setEvents(res.data.data);
     } catch (err) {
-      toast.error('Failed to load events');
+      toast.error('Failed to load campus events.');
     } finally {
       setLoadingEvents(false);
     }
@@ -230,9 +230,10 @@ const AdminDashboard = () => {
   const handleEventUpdate = async (e) => {
     e.preventDefault();
     try {
-      await api.put(`/university/events/${editingEvent._id}`, editingEvent);
-      toast.success('Event updated');
+      await api.put(`/events/${editingEvent._id}`, editingEvent);
+      toast.success('Event updated successfully!');
       setShowEventModal(false);
+      setEditingEvent(null);
       fetchEvents();
     } catch (err) {
       toast.error('Failed to update event');
